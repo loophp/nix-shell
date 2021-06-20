@@ -17,8 +17,8 @@ for PHP development.
 
 Each nix-shell environment provides the following tools:
 
-* PHP with extensions, xdebug and pcov
-* Custom php.ini
+* PHP with extensions, `xdebug` and `pcov`
+* Custom `php.ini`
 * Composer
 * Github CLi
 * Symfony CLi
@@ -26,22 +26,22 @@ Each nix-shell environment provides the following tools:
 
 ## Usage
 
-* First get `composer` with nix-shell
+* First get `composer`
 
 ```shell
 nix-shell -p php74Packages.composer
 ```
 
-* Then make sure to require this package
+* Now that `composer` is available, make sure to require this package
 
 ```shell
 composer require loophp/nix-shell --dev
 ```
 
-* Run the nix shell
+* Run `nix-shell`
 
 ```shell
-nix-shell -p vendor/loophp/nix-shell/resources/dev/php74
+nix-shell vendor/loophp/nix-shell/resources/dev/php74
 ```
 
 Available Nix-shells are:
