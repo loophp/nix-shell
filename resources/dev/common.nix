@@ -16,6 +16,10 @@ in mkShell {
     phpOverride
     phpOverride.packages.composer
 
+    git
+
+    docker-compose
+
     # Install Github CLi
     gh
 
