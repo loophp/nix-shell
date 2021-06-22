@@ -12,14 +12,16 @@
 This is a totally experimental package to centralize [nix-shell][46]
 files tailored for PHP development.
 
-This package provides then a couple of nix-shell files ready to use
+This package provides then a couple of `nix-shell` files ready to use
 for PHP development.
 
-Each nix-shell environment provides the following tools:
+Each `nix-shell` environment provides the following tools:
 
 * PHP with extensions, `xdebug` and `pcov`
 * Custom `php.ini`
 * Composer
+* docker-compose
+* Git
 * Github CLi
 * Symfony CLi
 * GNU Make
@@ -29,7 +31,7 @@ Each nix-shell environment provides the following tools:
 * First get `composer`
 
 ```shell
-nix-shell -p php74Packages.composer
+nix-shell -p phpPackages.composer
 ```
 
 * Now that `composer` is available, make sure to require this package
@@ -38,13 +40,19 @@ nix-shell -p php74Packages.composer
 composer require loophp/nix-shell --dev
 ```
 
-* Run `nix-shell`
+* Optionally, quit the current shell
+
+```shell
+exit
+```
+
+* Run `nix-shell` again
 
 ```shell
 nix-shell vendor/loophp/nix-shell/resources/dev/php74
 ```
 
-Available Nix-shells are:
+Available shells are:
 
 * `vendor/loophp/nix-shell/resources/dev/php74`
 * `vendor/loophp/nix-shell/resources/dev/php80`

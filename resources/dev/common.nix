@@ -16,8 +16,10 @@ in mkShell {
     phpOverride
     phpOverride.packages.composer
 
+    # Install Git
     git
 
+    # Install docker-compose
     docker-compose
 
     # Install Github CLi
@@ -26,7 +28,7 @@ in mkShell {
     # Install Symfony CLi
     symfony-cli
 
-    # Install GNU Make for shorthands
+    # Install GNU Make
     gnumake
   ];
 }
