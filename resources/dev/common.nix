@@ -9,7 +9,7 @@ let
     };
 
 in mkShell {
-  name = "php74-dev";
+  name = "php-" + phpOverride.version;
 
   buildInputs = [
     # Install PHP and composer
