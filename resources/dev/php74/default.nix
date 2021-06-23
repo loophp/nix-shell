@@ -27,21 +27,22 @@
         opcache
 
         # Optional
+        calendar
+        curl
+        exif
+        fileinfo
+        gd
+        mbstring
+        openssl
         pcov
         pdo_sqlite
         pdo_mysql
         pdo_pgsql
-
-        openssl
-        calendar
         soap
-        mbstring
-        exif
-        fileinfo
-        gd
-        curl
-        zip
-        xmlwriter
         xdebug
+        xmlreader
+        xmlwriter
+        zip
+        zlib
     ];
 }
