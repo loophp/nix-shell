@@ -1,9 +1,14 @@
-{ pkgs, phpPkg, phpIni, phpExtensions }:
-with pkgs;
-let
-    php = phpPkg;
+{
+  pkgs ? (import <nixpkgs> {}),
+  version,
+  phpIni,
+  phpExtensions
+}:
 
-    phpOverride = php.buildEnv {
+with pkgs;
+
+let
+    phpOverride = pkgs.${version}.buildEnv {
       extensions = phpExtensions;
       extraConfig = phpIni;
     };

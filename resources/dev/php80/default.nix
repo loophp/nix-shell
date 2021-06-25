@@ -1,9 +1,5 @@
-{ pkgs ? (import <nixpkgs> {}), ... }:
-
 (import ../common.nix) {
-    inherit pkgs;
-
-    phpPkg = pkgs.php80;
+    version = "php80";
 
     phpIni = ''
         max_execution_time = 0
