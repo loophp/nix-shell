@@ -5,15 +5,13 @@
   phpExtensions
 }:
 
-with pkgs;
-
 let
     phpOverride = pkgs.${version}.buildEnv {
       extensions = phpExtensions;
       extraConfig = phpIni;
     };
 
-in mkShell {
+in pkgs.mkShell {
   name = "php-" + phpOverride.version;
 
   buildInputs = [
@@ -22,18 +20,18 @@ in mkShell {
     phpOverride.packages.composer
 
     # Install Git
-    git
+    pkgs.git
 
     # Install docker-compose
-    docker-compose
+    pkgs.docker-compose
 
     # Install Github CLi
-    gh
+    pkgs.gh
 
     # Install Symfony CLi
-    symfony-cli
+    pkgs.symfony-cli
 
     # Install GNU Make
-    gnumake
+    pkgs.gnumake
   ];
 }
