@@ -46,16 +46,21 @@ composer require loophp/nix-shell --dev
 exit
 ```
 
-* Run `nix-shell` again
+* Run `nix-shell` again (*mind the trailing slash at the end!*)
 
 ```shell
-nix-shell vendor/loophp/nix-shell/resources/dev/php74
+nix-shell vendor/loophp/nix-shell/resources/dev/php74/
 ```
 
 Available shells are:
 
-* `vendor/loophp/nix-shell/resources/dev/php74`
-* `vendor/loophp/nix-shell/resources/dev/php80`
+* `vendor/loophp/nix-shell/resources/dev/php56/`
+* `vendor/loophp/nix-shell/resources/dev/php70/`
+* `vendor/loophp/nix-shell/resources/dev/php71/`
+* `vendor/loophp/nix-shell/resources/dev/php72/`
+* `vendor/loophp/nix-shell/resources/dev/php73/`
+* `vendor/loophp/nix-shell/resources/dev/php74/`
+* `vendor/loophp/nix-shell/resources/dev/php80/`
 
 ## Contributing
 
@@ -63,6 +68,10 @@ Feel free to contribute by sending Github pull requests. I'm quite responsive :-
 
 If you can't contribute to the code, you can also sponsor me on [Github][5] or
 [Paypal][6].
+
+## Thanks
+
+* [Jan Tojnar][47] for assisting me into incorporating his [own package][48].
 
 ## Changelog
 
@@ -96,3 +105,5 @@ For more detailed changelogs, please check [the release changelogs][45].
 [44]: https://github.com/loophp/nix-shell/commits/master
 [45]: https://github.com/loophp/nix-shell/releases
 [46]: https://nixos.org/guides/nix-pills/developing-with-nix-shell.html
+[47]: https://github.com/jtojnar
+[48]: https://github.com/fossar/nix-phps
