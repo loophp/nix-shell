@@ -1,15 +1,16 @@
 {
   pkgs ? (import <nixpkgs> {}),
+  nix-phps ? import (fetchTarball https://github.com/fossar/nix-phps/archive/57fda5bb79afb05d0cac2c2f1025339250beb81c.tar.gz),
   version,
   phpIni,
   phpExtensions
 }:
 
 let
-    phpOverride = pkgs.${version}.buildEnv {
-      extensions = phpExtensions;
-      extraConfig = phpIni;
-    };
+  phpOverride = nix-phps.packages.${builtins.currentSystem}.${version}.buildEnv {
+    extensions = phpExtensions;
+    extraConfig = phpIni;
+  };
 
 in pkgs.mkShell {
   name = "php-" + phpOverride.version;
