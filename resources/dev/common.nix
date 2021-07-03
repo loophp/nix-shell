@@ -1,6 +1,6 @@
 {
   pkgs ? (import <nixpkgs> {}),
-  nix-phps ? import (fetchTarball https://github.com/fossar/nix-phps/archive/b5ef788708c081de15aa58c9e3f5d0448d683e0d.tar.gz),
+  nix-phps ? import (fetchTarball https://github.com/fossar/nix-phps/archive/31d86400860816d0f20406b336870a9ed31d5fbf.tar.gz),
   version ? "php74",
   phpIni ? ''
     max_execution_time = 0
