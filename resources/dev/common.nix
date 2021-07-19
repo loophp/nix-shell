@@ -1,6 +1,6 @@
 {
   pkgs ? (import <nixpkgs> {}),
-  nix-phps ? import (fetchTarball https://github.com/fossar/nix-phps/archive/31d86400860816d0f20406b336870a9ed31d5fbf.tar.gz),
+  nix-phps ? import (fetchTarball https://github.com/fossar/nix-phps/archive/49fea59ae5ae634ee8b38e89ddd22b3dd9f49176.tar.gz),
   version ? "php74",
   phpIni ? ''
     max_execution_time = 0
@@ -35,6 +35,7 @@
         pdo_mysql
         pdo_pgsql
         soap
+        sqlite3
         xdebug
         xmlreader
         xmlwriter
