@@ -1,12 +1,7 @@
 {
   pkgs,
   phps,
-  version ? "php74",
-  phpIni ? ''
-    max_execution_time = 0
-    xdebug.mode=debug
-    memory_limit=2048M
-    '',
+  version,
   phpExtensions ? { all, ... }: with all; [],
   defaultExtensions ? { all, ... }: with all; []
 }:
@@ -48,9 +43,12 @@ let
     zlib
   ];
 
+  # This is the reason why we use --impure flag.
+  phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
+
   phpOverride = phps.${version}.buildEnv {
     extensions = phpExtensions defaultPhpExtensions;
-    extraConfig = phpIni;
+    extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
   };
 
   mkShellNoCC = pkgs.mkShell.override { stdenv = pkgs.stdenvNoCC; };

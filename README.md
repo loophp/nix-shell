@@ -10,12 +10,12 @@
 ## Description
 
 This is a totally experimental package to centralize
-[develpment environment][46] files tailored for PHP development.
+[development environment][46] files tailored for PHP development.
 
-This package provides then a couple of `flakes` ready to use
+This package provides a Nix `flakes` ready to use
 for PHP development.
 
-Each `shell` environment provides the following tools:
+Each available environment provides the following tools:
 
 * PHP with extensions, `xdebug` and `pcov`
 * Custom `php.ini`
@@ -28,34 +28,8 @@ Each `shell` environment provides the following tools:
 
 ## Usage
 
-* First get `composer`
-
 ```shell
-nix-shell -p phpPackages.composer
-```
-
-* Now that `composer` is available, make sure to require this package
-
-```shell
-composer require loophp/nix-shell --dev
-```
-
-* Optionally, quit the current shell
-
-```shell
-exit
-```
-
-* Run `nix develop` again (*mind the trailing slash at the end!*)
-
-```shell
-nix develop .#php
-```
-
-Replace the last part by the PHP version that you want to use:
-
-```shell
-nix develop .#php56
+nix develop github:loophp/nix-shell#php80
 ```
 
 Available PHP versions are:
@@ -66,8 +40,37 @@ Available PHP versions are:
 * `php72`
 * `php73`
 * `php74`
+* `php74-nodebug`
 * `php80`
-* `php81`
+* `php80-nodebug`
+
+### Customize PHP
+
+To customize the PHP configuration, you can do it like this:
+
+```shell
+nix develop github:loophp/nix-shell#php80
+php -c /path/to/the/config.ini <<command>>
+```
+
+Another option would be to create a `.php.ini` file within your
+current working directory before running the PHP environment,
+as such:
+
+```ini
+max_execution_time = 0
+memory_limit = 2048M
+```
+
+Then run:
+
+
+```shell
+nix develop github:loophp/nix-shell#php80 --impure
+```
+
+The `--impure` flag is important to make sure that your custom
+`.php.ini` file is correctly taken in account.
 
 ## Contributing
 
