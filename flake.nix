@@ -68,7 +68,7 @@
           php74-nodebug = import ./resources/dev/common.nix {
             pkgs = pkgs;
             phps = phps.packages.${system};
-            version = "php74-nodebug";
+            version = "php74";
             phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x [all.xdebug all.pcov]) (default all);
           };
 
@@ -82,7 +82,7 @@
           php80-nodebug = import ./resources/dev/common.nix {
             pkgs = pkgs;
             phps = phps.packages.${system};
-            version = "php80-nodebug";
+            version = "php80";
             phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x [all.xdebug all.pcov]) (default all);
           };
         };
