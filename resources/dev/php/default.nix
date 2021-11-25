@@ -6,6 +6,6 @@
 (import ../common.nix) {
     pkgs = pkgs;
     phps = phps;
-    version = "php80";
+    version = "php";
     phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x []) (default all);
 }

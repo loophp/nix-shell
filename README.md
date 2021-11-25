@@ -9,13 +9,13 @@
 
 ## Description
 
-This is a totally experimental package to centralize [nix-shell][46]
-files tailored for PHP development.
+This is a totally experimental package to centralize
+[develpment environment][46] files tailored for PHP development.
 
-This package provides then a couple of `nix-shell` files ready to use
+This package provides then a couple of `flakes` ready to use
 for PHP development.
 
-Each `nix-shell` environment provides the following tools:
+Each `shell` environment provides the following tools:
 
 * PHP with extensions, `xdebug` and `pcov`
 * Custom `php.ini`
@@ -46,21 +46,28 @@ composer require loophp/nix-shell --dev
 exit
 ```
 
-* Run `nix-shell` again (*mind the trailing slash at the end!*)
+* Run `nix develop` again (*mind the trailing slash at the end!*)
 
 ```shell
-nix-shell vendor/loophp/nix-shell/resources/dev/php74/
+nix develop .#php
 ```
 
-Available shells are:
+Replace the last part by the PHP version that you want to use:
 
-* `vendor/loophp/nix-shell/resources/dev/php56/`
-* `vendor/loophp/nix-shell/resources/dev/php70/`
-* `vendor/loophp/nix-shell/resources/dev/php71/`
-* `vendor/loophp/nix-shell/resources/dev/php72/`
-* `vendor/loophp/nix-shell/resources/dev/php73/`
-* `vendor/loophp/nix-shell/resources/dev/php74/`
-* `vendor/loophp/nix-shell/resources/dev/php80/`
+```shell
+nix develop .#php56
+```
+
+Available PHP versions are:
+
+* `php56`
+* `php70`
+* `php71`
+* `php72`
+* `php73`
+* `php74`
+* `php80`
+* `php81`
 
 ## Contributing
 
