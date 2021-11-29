@@ -1,6 +1,4 @@
-[![Latest Stable Version][latest stable version]][1]
- [![GitHub stars][github stars]][1]
- [![Total Downloads][total downloads]][1]
+[![GitHub stars][github stars]][1]
  [![License][license]][1]
  [![Donate!][donate github]][5]
  [![Donate!][donate paypal]][6]
@@ -9,24 +7,26 @@
 
 ## Description
 
-This is a totally experimental package to centralize
-[development environment][46] files tailored for PHP development.
-
-This package provides a Nix `flakes` ready to use
-for PHP development.
+This package provides a `Nix flake` ready to use
+for PHP development, using the [`Nix` package manager][50]
+which can be installed on (*almost*) any operating system.
 
 Each available environment provides the following tools:
 
-* PHP with extensions, `xdebug` and `pcov`
-* Custom `php.ini`
-* Composer
-* docker-compose
-* Git
-* Github CLi
-* Symfony CLi
-* GNU Make
+* PHP with extensions, `xdebug` and `pcov`,
+* Custom `php.ini` loading,
+* Composer,
+* docker-compose,
+* Git,
+* Github CLi,
+* Symfony CLi,
+* GNU Make.
+
+Available PHP versions from `5.6` to `8.0`.
 
 ## Usage
+
+To work with `PHP 8.0` (latest stable version):
 
 ```shell
 nix develop github:loophp/nix-shell#php80
@@ -117,3 +117,4 @@ For more detailed changelogs, please check [the release changelogs][45].
 [46]: https://nixos.org/guides/nix-pills/developing-with-nix-shell.html
 [47]: https://github.com/jtojnar
 [48]: https://github.com/fossar/nix-phps
+[50]: https://nixos.org/download.html
