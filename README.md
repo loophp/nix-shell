@@ -5,6 +5,8 @@
 
 # Nix shell
 
+![Tutorial](./docs/readme.gif "Tutorial")
+
 ## Description
 
 This package provides a `Nix flake` ready to use
