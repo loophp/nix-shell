@@ -1,10 +1,9 @@
 name: 'Update flake lock file'
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 6 * * *'
 
 jobs:
   createPullRequest:
-    uses: drupol/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
+    uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@1.0.0
