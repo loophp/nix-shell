@@ -85,6 +85,21 @@
             version = "php80";
             phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x [all.xdebug all.pcov]) (default all);
           };
+
+          php81 = import ./resources/dev/common.nix {
+            inherit pkgs;
+            phps = phps.packages.${system};
+            version = "php81";
+            phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x []) (default all);
+          };
+
+          php81-nodebug = import ./resources/dev/common.nix {
+            inherit pkgs;
+            phps = phps.packages.${system};
+            version = "php81";
+            phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x [all.xdebug all.pcov]) (default all);
+          };
+
         };
       }
     );

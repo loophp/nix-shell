@@ -9,12 +9,14 @@
 let
   defaultPhpExtensions = all: with all; [
     # Mandatory
+    bcmath
     filter
     iconv
     ctype
     redis
     tokenizer
     simplexml
+    sodium
 
     # Recommendations
     dom
