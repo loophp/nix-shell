@@ -45,6 +45,8 @@ Available PHP versions are:
 * `php74-nodebug`
 * `php80`
 * `php80-nodebug`
+* `php81`
+* `php81-nodebug`
 
 ### Customize PHP
 
