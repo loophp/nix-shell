@@ -1,7 +1,6 @@
 [![GitHub stars][github stars]][1]
  [![License][license]][1]
  [![Donate!][donate github]][5]
- [![Donate!][donate paypal]][6]
 
 # Nix shell
 
@@ -24,14 +23,14 @@ Each available environment provides the following tools:
 * Symfony CLi,
 * GNU Make.
 
-Available PHP versions from `5.6` to `8.0`.
+Available PHP versions from `5.6` to `8.1`.
 
 ## Usage
 
-To work with `PHP 8.0` (latest stable version):
+To work with `PHP 8.1` (latest stable version):
 
 ```shell
-nix develop github:loophp/nix-shell#php80
+nix develop github:loophp/nix-shell#php81
 ```
 
 Available PHP versions are:
@@ -78,10 +77,16 @@ The `--impure` flag is important to make sure that your custom
 
 ## Contributing
 
-Feel free to contribute by sending Github pull requests. I'm quite responsive :-)
+Feel free to contribute by sending pull requests. We are a
+usually very responsive team and we will help you going
+through your pull request from the beginning to the end.
 
-If you can't contribute to the code, you can also sponsor me on [Github][5] or
-[Paypal][6].
+For some reasons, if you can't contribute to the code and
+willing to help, sponsoring is a good, sound and safe way
+to show us some gratitude for the hours we invested in this
+package.
+
+Sponsor me on [Github][5] and/or any of [the contributors][6].
 
 ## Thanks
 
@@ -114,7 +119,7 @@ For more detailed changelogs, please check [the release changelogs][45].
 [38]: https://github.com/phpstan/phpstan
 [39]: https://github.com/vimeo/psalm
 [5]: https://github.com/sponsors/drupol
-[6]: https://www.paypal.me/drupol
+[6]: https://github.com/loophp/nix-shell/graphs/contributors
 [43]: https://github.com/loophp/nix-shell/blob/master/CHANGELOG.md
 [44]: https://github.com/loophp/nix-shell/commits/master
 [45]: https://github.com/loophp/nix-shell/releases
