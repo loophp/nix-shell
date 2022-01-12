@@ -35,17 +35,17 @@ nix develop github:loophp/nix-shell#php81
 
 Available PHP versions are:
 
-* `php56`
-* `php70`
-* `php71`
-* `php72`
-* `php73`
-* `php74`
-* `php74-nodebug`
-* `php80`
-* `php80-nodebug`
-* `php81`
-* `php81-nodebug`
+* `php56`, `php56-nts`
+* `php70`, `php70-nts`
+* `php71`, `php71-nts`
+* `php72`, `php72-nts`
+* `php73`, `php73-nts`
+* `php74`, `php74-nts`
+* `php74-nodebug`, `php74-nts-nodebug`
+* `php80`, `php80-nts`
+* `php80-nodebug`, `php80-nts-nodebug`
+* `php81`, `php81-nts`
+* `php81-nodebug`, `php81-nts-nodebug`
 
 ### Customize PHP
 

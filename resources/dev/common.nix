@@ -2,6 +2,7 @@
   pkgs,
   phps,
   version,
+  ztsSupport,
   phpExtensions ? { all, ... }: with all; [],
   defaultExtensions ? { all, ... }: with all; []
 }:
@@ -51,6 +52,7 @@ let
   phpOverride = phps.${version}.buildEnv {
     extensions = phpExtensions defaultPhpExtensions;
     extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
+    inherit ztsSupport;
   };
 
   mkShellNoCC = pkgs.mkShell.override { stdenv = pkgs.stdenvNoCC; };
