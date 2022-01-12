@@ -27,11 +27,14 @@ Available PHP versions from `5.6` to `8.1`.
 
 ## Usage
 
-To work with `PHP 8.1` (latest stable version):
+To work with `PHP 8.1`:
 
 ```shell
 nix develop github:loophp/nix-shell#php81
 ```
+
+`ZTS` is enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
+feel free to use the `NTS` if needed.
 
 Available PHP versions are:
 
