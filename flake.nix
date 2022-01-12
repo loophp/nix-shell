@@ -19,7 +19,7 @@
           default = import ./resources/dev/common.nix {
             inherit pkgs;
             phps = phps.packages.${system};
-            version = "php80";
+            version = "php81";
             phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x []) (default all);
             apxs2Support = true;
           };
@@ -27,7 +27,7 @@
           default-nts = import ./resources/dev/common.nix {
             inherit pkgs;
             phps = phps.packages.${system};
-            version = "php80";
+            version = "php81";
             phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x []) (default all);
             apxs2Support = false;
           };
