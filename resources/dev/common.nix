@@ -2,7 +2,7 @@
   pkgs,
   phps,
   version,
-  ztsSupport,
+  apxs2Support,
   phpExtensions ? { all, ... }: with all; [],
   defaultExtensions ? { all, ... }: with all; []
 }:
@@ -49,10 +49,9 @@ let
   # This is the reason why we use --impure flag.
   phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
 
-  phpOverride = phps.${version}.buildEnv {
+  phpOverride = (phps.${version}.override { apxs2Support = apxs2Support; }).buildEnv {
     extensions = phpExtensions defaultPhpExtensions;
     extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
-    inherit ztsSupport;
   };
 
   mkShellNoCC = pkgs.mkShell.override { stdenv = pkgs.stdenvNoCC; };
