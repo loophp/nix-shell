@@ -70,11 +70,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1642009340,
-        "narHash": "sha256-xb428b0nlG8oOyIXYqcKn0h/CHUTQWrHxy0l9XsGxuw=",
+        "lastModified": 1642009384,
+        "narHash": "sha256-CyxpRMJVzMzbMxT8T6Ug/xE/UMAFQR07DCwn0YUm8Wg=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "a9dda66a11022eff8f181d706901559c127122a1",
+        "rev": "41b864ec26064778d235b9c6387ea5ec3b2086b0",
         "type": "github"
       },
       "original": {
