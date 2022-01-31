@@ -10,11 +10,6 @@
   outputs = { self, flake-utils, nixpkgs, phps }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        inherit (builtins)
-          attrNames
-          attrValues
-        ;
-
         pkgs = import nixpkgs {
           inherit system;
           config = { allowUnfree = true; };
@@ -238,15 +233,8 @@
           inherit php81-nts;
           inherit php81-nts-nodebug;
         };
-
-        inherit (flake-utils) createOverlays;
       in
       {
-        overlays = createOverlays derivations {
-          inherit
-            nixpkgs
-          ;
-        };
         devShells = {
           inherit default;
           inherit default-nts;
@@ -275,7 +263,7 @@
         };
 
         packages = {
-          inherit (pkgs) default default-nts php56 php56-nts php70 php70-nts php71 php71-nts php72 php72-nts php73 php73-nts php74 php74-nts php74-nodebug php74-nts-nodebug php80 php80-nodebug php80-nts php80-nts-nodebug php81 php81-nodebug php81-nts php81-nts-nodebug;
+          inherit default default-nts php56 php56-nts php70 php70-nts php71 php71-nts php72 php72-nts php73 php73-nts php74 php74-nts php74-nodebug php74-nts-nodebug php80 php80-nodebug php80-nts php80-nts-nodebug php81 php81-nodebug php81-nts php81-nts-nodebug;
         };
       }
     );
