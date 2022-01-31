@@ -10,6 +10,11 @@
   outputs = { self, flake-utils, nixpkgs, phps }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        inherit (builtins)
+          attrNames
+          attrValues
+        ;
+
         pkgs = import nixpkgs {
           inherit system;
           config = { allowUnfree = true; };
@@ -206,8 +211,42 @@
           phpExtensions = default: { all, ... }: builtins.filter (x: !builtins.elem x [ all.xdebug all.pcov ]) (default all);
           apxs2Support = false;
         };
+
+        derivations = {
+          inherit default;
+          inherit default-nts;
+          inherit php56;
+          inherit php56-nts;
+          inherit php70;
+          inherit php70-nts;
+          inherit php71;
+          inherit php71-nts;
+          inherit php72;
+          inherit php72-nts;
+          inherit php73;
+          inherit php73-nts;
+          inherit php74;
+          inherit php74-nts;
+          inherit php74-nodebug;
+          inherit php74-nts-nodebug;
+          inherit php80;
+          inherit php80-nodebug;
+          inherit php80-nts;
+          inherit php80-nts-nodebug;
+          inherit php81;
+          inherit php81-nodebug;
+          inherit php81-nts;
+          inherit php81-nts-nodebug;
+        };
+
+        inherit (flake-utils) createOverlays;
       in
       {
+        overlays = createOverlays derivations {
+          inherit
+            nixpkgs
+          ;
+        };
         devShells = {
           inherit default;
           inherit default-nts;
@@ -235,7 +274,9 @@
           inherit php81-nts-nodebug;
         };
 
-        packages = (pkgs) default default-nts php56 php56-nts php70 php70-nts php71 php71-nts php72 php72-nts php73 php73-nts php74 php74-nts php74-nodebug php74-nts-nodebug php80 php80-nodebug php80-nts php80-nts-nodebug php81 php81-nodebug php81-nts php81-nts-nodebug;
+        packages = {
+          inherit (pkgs) default default-nts php56 php56-nts php70 php70-nts php71 php71-nts php72 php72-nts php73 php73-nts php74 php74-nts php74-nodebug php74-nts-nodebug php80 php80-nodebug php80-nts php80-nts-nodebug php81 php81-nodebug php81-nts php81-nts-nodebug;
+        };
       }
     );
 }
