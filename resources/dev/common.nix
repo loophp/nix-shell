@@ -1,10 +1,9 @@
-{
-  pkgs,
-  phps,
-  version,
-  apxs2Support,
-  phpExtensions ? { all, ... }: with all; [],
-  defaultExtensions ? { all, ... }: with all; []
+{ pkgs
+, phps
+, version
+, apxs2Support
+, phpExtensions ? { all, ... }: with all; [ ]
+, defaultExtensions ? { all, ... }: with all; [ ]
 }:
 
 let
@@ -55,7 +54,8 @@ let
   };
 
   mkShellNoCC = pkgs.mkShell.override { stdenv = pkgs.stdenvNoCC; };
-in mkShellNoCC {
+in
+mkShellNoCC {
   name = "php-" + phpOverride.version;
 
   buildInputs = [
