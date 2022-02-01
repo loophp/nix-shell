@@ -28,14 +28,19 @@ Available PHP versions from `5.6` to `8.1`.
 
 ### In a shell
 
-To work with `PHP 8.1`:
+To work with `PHP 8.1` only:
 
 ```shell
 nix develop github:loophp/nix-shell#php81
 ```
+or
+
+```shell
+nix develop github:loophp/nix-shell#env-php81
+```
 
 `ZTS` is enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
-feel free to use the `NTS` if needed.
+feel free to use the `NTS` if needed, see the matrix below.
 
 Available PHP versions and environments are:
 
@@ -56,7 +61,7 @@ Available PHP versions and environments are:
 * `php81`, `php81-nts`, `php81-nodebug`, `php81-nts-nodebug`
 * `env-php81`, `env-php81-nts`, `env-php81-nodebug`, `env-php81-nts-nodebug`
 
-This package also provide development environments with tools:
+This package also provide development environments with some tools:
 
 - Symfony cli
 - Github cli
@@ -64,7 +69,7 @@ This package also provide development environments with tools:
 - git
 - gnumake
 
-In order to use it, use the prefix `env-`:
+In order to use them, use the prefix `env-`:
 
 ```shell
 nix develop github:loophp/nix-shell#env-php81-nts-nodebug
@@ -85,14 +90,14 @@ Import the input:
 Then each PHP environment will be available at
 
 ```nix
-    # PHP 8.1 Non-Thread-Safe
+    # PHP 8.1 Non-Thread-Safe only
     phps.packages.${system}.php81-nts
 ```
 
 or
 
 ```nix
-    # PHP 8.1 Non-Thread-Safe, no debug extension
+    # PHP 8.1 Non-Thread-Safe, no debug extension and some tools
     phps.packages.${system}.env-php81-nts-nodebug
 ```
 
