@@ -27,6 +27,8 @@ Available PHP versions from `5.6` to `8.1`.
 
 ## Usage
 
+### In a shell
+
 To work with `PHP 8.1`:
 
 ```shell
@@ -49,6 +51,25 @@ Available PHP versions are:
 * `php80-nodebug`, `php80-nts-nodebug`
 * `php81`, `php81-nts`
 * `php81-nodebug`, `php81-nts-nodebug`
+
+### In another flake
+
+Import the input:
+
+```nix
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    phps.url = "github:loophp/nix-shell";
+  };
+```
+
+Then each PHP environment will be available at
+
+```nix
+    # PHP 8.1 Non-Thread-Safe
+    phps.packages.${system}.php81-nts
+```
 
 ### Customize PHP
 

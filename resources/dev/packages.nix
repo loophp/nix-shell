@@ -54,11 +54,10 @@ let
   };
 
   mkShellNoCC = pkgs.mkShell.override { stdenv = pkgs.stdenvNoCC; };
-in
-pkgs.buildEnv {
+in {
   name = "php-" + phpOverride.version;
 
-  paths = [
+  buildInputs = [
     # Install PHP and composer
     phpOverride
     phpOverride.packages.composer

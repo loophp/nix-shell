@@ -210,9 +210,14 @@
         };
       in
       {
-        devShells = derivations;
-
         packages = derivations;
+
+        devShells = builtins.mapAttrs
+          (name: value: pkgs.mkShellNoCC {
+            inherit name;
+            buildInputs = [ value ];
+          })
+          derivations;
       }
     );
 }
