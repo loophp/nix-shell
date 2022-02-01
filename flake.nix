@@ -70,18 +70,21 @@
             php
             php.packages.composer
           ] ++ [
-              pkgs.symfony-cli
-              pkgs.gh
-              pkgs.sqlite
-              pkgs.git
-              pkgs.gnumake
+            pkgs.symfony-cli
+            pkgs.gh
+            pkgs.sqlite
+            pkgs.git
+            pkgs.gnumake
           ];
         };
 
         derivations = rec
         {
           default = (php.php81.override { }).buildEnv {
-            # TODO: Make a function such as: makePhpExtension ["a" "b" "c"] ["x" "y" "z"]
+            # TODO: Make a function which deals with strings instead of derivations.
+            # TODO: Such as: makePhpExtension ["a" "b" "c"] ["x" "y" "z"]
+            # TODO: The first argument is the list of extentions to include
+            # TODO: The second argument is the list of extensions to exclude
             extensions = phpExtensions defaultPhpExtensions defaultEmptyPhpExtensions;
             inherit extraConfig;
           };
