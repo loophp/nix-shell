@@ -81,6 +81,7 @@
         derivations = rec
         {
           default = (php.php81.override { }).buildEnv {
+            # TODO: Make a function such as: makePhpExtension ["a" "b" "c"] ["x" "y" "z"]
             extensions = phpExtensions defaultPhpExtensions defaultEmptyPhpExtensions;
             inherit extraConfig;
           };
