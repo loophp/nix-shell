@@ -2,7 +2,7 @@
   description = "PHP/Composer/SymfonyCLi/GithubCLi/git/sqlite/make/docker-compose";
 
   inputs = {
-    nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     phps.url = "github:fossar/nix-phps";
   };
