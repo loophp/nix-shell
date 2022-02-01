@@ -17,7 +17,6 @@ Each available environment provides the following tools:
 * PHP with extensions, `xdebug` and `pcov`,
 * Custom `php.ini` loading,
 * Composer,
-* docker-compose,
 * Git,
 * Github CLi,
 * Symfony CLi,
@@ -38,19 +37,38 @@ nix develop github:loophp/nix-shell#php81
 `ZTS` is enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
 feel free to use the `NTS` if needed.
 
-Available PHP versions are:
+Available PHP versions and environments are:
 
-* `php56`, `php56-nts`
-* `php70`, `php70-nts`
-* `php71`, `php71-nts`
-* `php72`, `php72-nts`
-* `php73`, `php73-nts`
-* `php74`, `php74-nts`
-* `php74-nodebug`, `php74-nts-nodebug`
-* `php80`, `php80-nts`
-* `php80-nodebug`, `php80-nts-nodebug`
-* `php81`, `php81-nts`
-* `php81-nodebug`, `php81-nts-nodebug`
+* `php56`, `php56-nts`, `php56-nodebug`, `php56-nts-nodebug`
+* `env-php56`, `env-php56-nts`, `env-php56-nodebug`, `env-php56-nts-nodebug`
+* `php70`, `php70-nts`, `php70-nodebug`, `php70-nts-nodebug`
+* `env-php70`, `env-php70-nts`, `env-php70-nodebug`, `env-php70-nts-nodebug`
+* `php71`, `php71-nts`, `php71-nodebug`, `php71-nts-nodebug`
+* `env-php71`, `env-php71-nts`, `env-php71-nodebug`, `env-php71-nts-nodebug`
+* `php72`, `php72-nts`, `php72-nodebug`, `php72-nts-nodebug`
+* `env-php72`, `env-php72-nts`, `env-php72-nodebug`, `env-php72-nts-nodebug`
+* `php73`, `php73-nts`, `php73-nodebug`, `php73-nts-nodebug`
+* `env-php73`, `env-php73-nts`, `env-php73-nodebug`, `env-php73-nts-nodebug`
+* `php74`, `php74-nts`, `php74-nodebug`, `php74-nts-nodebug`
+* `env-php74`, `env-php74-nts`, `env-php74-nodebug`, `env-php74-nts-nodebug`
+* `php80`, `php80-nts`, `php80-nodebug`, `php80-nts-nodebug`
+* `env-php80`, `env-php80-nts`, `env-php80-nodebug`, `env-php80-nts-nodebug`
+* `php81`, `php81-nts`, `php81-nodebug`, `php81-nts-nodebug`
+* `env-php81`, `env-php81-nts`, `env-php81-nodebug`, `env-php81-nts-nodebug`
+
+This package also provide development environments with tools:
+
+- Symfony cli
+- Github cli
+- sqlite
+- git
+- gnumake
+
+In order to use it, use the prefix `env-`:
+
+```shell
+nix develop github:loophp/nix-shell#env-php81-nts-nodebug
+```
 
 ### In another flake
 
@@ -69,6 +87,13 @@ Then each PHP environment will be available at
 ```nix
     # PHP 8.1 Non-Thread-Safe
     phps.packages.${system}.php81-nts
+```
+
+or
+
+```nix
+    # PHP 8.1 Non-Thread-Safe, no debug extension
+    phps.packages.${system}.env-php81-nts-nodebug
 ```
 
 ### Customize PHP
