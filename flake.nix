@@ -86,11 +86,11 @@
             let
               package = phps.packages.${system}."php${pkgs.lib.strings.replaceStrings [ "." ] [ "" ] version}";
               php = package.override flags;
-              drvs = map (ext: php.extensions."${ext}") extensions;
+              drvs = { all, ... }: map (ext: all."${ext}") extensions;
             in
             (php.buildEnv {
               inherit extraConfig;
-              extensions = { all, ... }: drvs;
+              extensions = drvs;
             });
 
           derivations = rec
