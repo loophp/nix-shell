@@ -106,7 +106,7 @@ or
 To customize the PHP configuration, you can do it like this:
 
 ```shell
-nix develop github:loophp/nix-shell#php80
+nix develop github:loophp/nix-shell#php81
 php -c /path/to/the/config.ini <<command>>
 ```
 
@@ -123,7 +123,7 @@ Then run:
 
 
 ```shell
-nix develop github:loophp/nix-shell#php80 --impure
+nix develop github:loophp/nix-shell#php81 --impure
 ```
 
 The `--impure` flag is important to make sure that your custom
