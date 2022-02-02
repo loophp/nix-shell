@@ -145,6 +145,7 @@ Sponsor me on [Github][5] and/or any of [the contributors][6].
 ## Thanks
 
 * [Jan Tojnar][47] for assisting me into incorporating his [own package][48].
+* [Aaron Anderse][52] for improving the code and giving some tips.
 
 ## Changelog
 
@@ -181,3 +182,4 @@ For more detailed changelogs, please check [the release changelogs][45].
 [47]: https://github.com/jtojnar
 [48]: https://github.com/fossar/nix-phps
 [50]: https://nixos.org/download.html
+[52]: https://github.com/aanderse
