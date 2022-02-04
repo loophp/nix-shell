@@ -16,18 +16,16 @@
             config = { allowUnfree = true; };
           };
 
-          # Get composer file into set
-          composer = builtins.fromJSON (builtins.readFile "${builtins.getEnv "PWD"}/composer.json");
-          # Get "require" section
+          # composer.json filename
+          composerJsonFilename = "${builtins.getEnv "PWD"}/composer.json";
+          # Get composer file into a set, if it exists
+          composer = if builtins.pathExists "${composerJsonFilename}" then builtins.fromJSON (builtins.readFile "${composerJsonFilename}") else {};
+          # Get "require" section to extract extensions later
           require = (if (composer ? require) then composer.require else {});
           # Copy the keys of a set in a value
           exts = nixpkgs.lib.attrsets.mapAttrs' (name: value: nixpkgs.lib.nameValuePair name name) require;
-          # Convert the set into a list
-          exts2 = (map (key: builtins.getAttr key exts) (builtins.attrNames exts));
-          # Filter out values not starting with "ext-"
-          exts3 = builtins.filter (x: (builtins.substring 0 4 x) == "ext-") exts2;
-          # Get rid of the first 4 characters in the name
-          userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) exts3;
+          # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
+          userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (map (key: builtins.getAttr key exts) (builtins.attrNames exts)));
 
           extensionsGroups = {
             mandatory = [
