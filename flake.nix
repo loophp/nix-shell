@@ -99,7 +99,7 @@
             let
               package = phps.packages.${system}."php${pkgs.lib.strings.replaceStrings [ "." ] [ "" ] version}";
               php = package.override flags;
-              drvs = { all, ... }: map (ext: all."${ext}") extensions;
+              drvs = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") extensions));
             in
             (php.buildEnv {
               inherit extraConfig;
