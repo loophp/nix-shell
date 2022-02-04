@@ -24,6 +24,9 @@ Each available environment provides the following tools:
 
 Available PHP versions from `5.6` to `8.1`.
 
+The PHP extensions to use are automatically inferred
+from the `composer.json` file.
+
 ## Usage
 
 ### In a shell
