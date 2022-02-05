@@ -40,41 +40,39 @@
           composerLockExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerLockRequiresMap));
 
           extensionsGroups = {
+            # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
             mandatory = [
               "bcmath"
-              "filter"
-              "iconv"
-              "ctype"
-              "redis"
-              "tokenizer"
-              "simplexml"
-              "sodium"
-              "dom"
-              "posix"
-              "intl"
-              "opcache"
-            ] ++ userExtensions ++ composerLockExtensions;
-
-            optional = [
               "calendar"
+              "ctype"
               "curl"
+              "dom"
               "exif"
               "fileinfo"
+              "filter"
               "gd"
+              "iconv"
+              "intl"
               "mbstring"
+              "opcache"
               "openssl"
               "pdo_sqlite"
               "pdo_mysql"
               "pdo_pgsql"
+              "posix"
+              "simplexml"
               "soap"
+              "sodium"
               "sqlite3"
+              "tokenizer"
               "xmlreader"
               "xmlwriter"
               "zip"
               "zlib"
-            ];
+            ] ++ userExtensions ++ composerLockExtensions;
 
-            useful = [
+            optional = [
+              "redis"
               "ds"
             ];
 
@@ -102,7 +100,7 @@
 
           makePhp =
             { version ? "8.1"
-            , extensions ? extensionsGroups.mandatory ++ extensionsGroups.optional ++ extensionsGroups.debug
+            , extensions ? extensionsGroups.mandatory ++ extensionsGroups.debug
             , flags ? { }
             , extraConfig ? ""
             }:
@@ -126,19 +124,19 @@
 
             php56 = makePhp {
               version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) (extensionsGroups.mandatory ++ extensionsGroups.optional ++ extensionsGroups.debug);
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) (extensionsGroups.mandatory ++ extensionsGroups.debug);
               inherit extraConfig;
             };
 
             php56-nodebug = makePhp {
               version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) (extensionsGroups.mandatory ++ extensionsGroups.optional);
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
             php56-nts = makePhp {
               version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) (extensionsGroups.mandatory ++ extensionsGroups.optional ++ extensionsGroups.debug);
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) (extensionsGroups.mandatory ++ extensionsGroups.debug);
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -148,7 +146,7 @@
 
             php56-nts-nodebug = makePhp {
               version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) (extensionsGroups.mandatory ++ extensionsGroups.optional);
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -172,13 +170,13 @@
 
             php70-nodebug = makePhp {
               version = "7.0";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
             php70-nts-nodebug = makePhp {
               version = "7.0";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -193,7 +191,7 @@
 
             php71-nodebug = makePhp {
               version = "7.1";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
@@ -208,7 +206,7 @@
 
             php71-nts-nodebug = makePhp {
               version = "7.1";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -223,7 +221,7 @@
 
             php72-nodebug = makePhp {
               version = "7.2";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
@@ -238,7 +236,7 @@
 
             php72-nts-nodebug = makePhp {
               version = "7.2";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -253,7 +251,7 @@
 
             php73-nodebug = makePhp {
               version = "7.3";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
@@ -268,7 +266,7 @@
 
             php73-nts-nodebug = makePhp {
               version = "7.3";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -292,13 +290,13 @@
 
             php74-nodebug = makePhp {
               version = "7.4";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
             php74-nts-nodebug = makePhp {
               version = "7.4";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -322,13 +320,13 @@
 
             php80-nodebug = makePhp {
               version = "8.0";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
             php80-nts-nodebug = makePhp {
               version = "8.0";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -352,13 +350,13 @@
 
             php81-nodebug = makePhp {
               version = "8.1";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               inherit extraConfig;
             };
 
             php81-nts-nodebug = makePhp {
               version = "8.1";
-              extensions = extensionsGroups.mandatory ++ extensionsGroups.optional;
+              extensions = extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
