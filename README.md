@@ -39,6 +39,9 @@ To load the `xdebug` and `pcov` extensions, edit `composer.json` as such:
 ...>8...
 ```
 
+Do not forget to add the flag `--impure` when loading custom
+extensions from `composer.json`.
+
 ## Usage
 
 ### In a shell
