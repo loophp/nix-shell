@@ -17,27 +17,26 @@
           };
           lib = pkgs.lib;
 
-          # composer.json filename
-          composerJsonFilename = "${builtins.getEnv "PWD"}/composer.json";
-          # Get composer file into a set, if it exists
-          composer = if builtins.pathExists "${composerJsonFilename}" then builtins.fromJSON (builtins.readFile "${composerJsonFilename}") else { };
-          # Get "require" section to extract extensions later
-          require = (if (composer ? require) then composer.require else { });
-          # Copy the keys of a set in a value
-          exts = lib.attrsets.mapAttrs' (name: value: lib.nameValuePair name name) require;
-          # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
-          userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (map (key: builtins.getAttr key exts) (builtins.attrNames exts)));
+          readJsonSectionFromFile = file: section: default:
+            let
+              filepath = "${builtins.getEnv "PWD"}/${file}";
+              filecontent = if builtins.pathExists filepath then builtins.fromJSON (builtins.readFile filepath) else { };
+            in
+              filecontent.${section} or default;
 
-          # composer.lock filename
-          composerLockFilename = "${builtins.getEnv "PWD"}/composer.lock";
-          # Get composerLock file into a set, if it exists
-          composerLock = if builtins.pathExists "${composerLockFilename}" then builtins.fromJSON (builtins.readFile "${composerLockFilename}") else { };
-          composerLockPackages = (if (composerLock ? packages) then composerLock.packages else [ ]);
-          # Get "require" section of each package to extract extensions later
-          composerLockRequires = map (package: (if (package ? require) then package.require else { })) composerLockPackages;
-          composerLockRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) composerLockRequires;
-          composerLockRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerLockRequiresKeys;
-          composerLockExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerLockRequiresMap));
+          # Get "require" section to extract extensions later
+          require = readJsonSectionFromFile "composer.json" "require" { };
+          # Get "packages" section
+          composerLockPackages = readJsonSectionFromFile "composer.lock" "packages" [ ];
+
+          # Merge require from Composer with "require" section of each package from Composer lock to extract extensions later
+          composerRequires = [ require ] ++ map (package: (if (package ? require) then package.require else { })) composerLockPackages;
+          # Copy keys into values
+          composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) composerRequires;
+          # Convert sets into lists
+          composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
+          # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
+          userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
 
           extensionsGroups = {
             # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
@@ -69,7 +68,7 @@
               "xmlwriter"
               "zip"
               "zlib"
-            ] ++ userExtensions ++ composerLockExtensions;
+            ] ++ userExtensions;
           };
 
           phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
