@@ -32,7 +32,7 @@
           composerLockFilename = "${builtins.getEnv "PWD"}/composer.lock";
           # Get composerLock file into a set, if it exists
           composerLock = if builtins.pathExists "${composerLockFilename}" then builtins.fromJSON (builtins.readFile "${composerLockFilename}") else { };
-          composerLockPackages = (if (composerLock ? packages) then composerLock.packages else { });
+          composerLockPackages = (if (composerLock ? packages) then composerLock.packages else [ ]);
           # Get "require" section of each package to extract extensions later
           composerLockRequires = map (package: (if (package ? require) then package.require else { })) composerLockPackages;
           composerLockRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) composerLockRequires;
