@@ -6,7 +6,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     phps.url = "github:fossar/nix-phps";
     flake-compat = {
-      url = github:edolstra/flake-compat;
+      url = "github:edolstra/flake-compat";
       flake = false;
     };
   };
