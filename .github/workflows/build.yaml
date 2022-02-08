@@ -1,0 +1,39 @@
+name: Builds
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    name: 'PHP ${{ matrix.php.major }}.${{ matrix.php.minor }}'
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ubuntu-latest, windows-latest, macOS-latest]
+        php:
+          - major: 8
+            minor: 1
+          - major: 8
+            minor: 0
+          - major: 7
+            minor: 4
+          - major: 7
+            minor: 3
+          - major: 7
+            minor: 2
+          - major: 7
+            minor: 1
+          - major: 7
+            minor: 0
+          - major: 5
+            minor: 6
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v16
+
+      - name: Build PHP
+        run: nix build .php${{ matrix.php.major }}${{ matrix.php.minor }}
