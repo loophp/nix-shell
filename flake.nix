@@ -81,8 +81,6 @@
             ] ++ userExtensions;
           };
 
-          phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
-          extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
           makePhpEnv = name: php: pkgs.buildEnv {
             inherit name;
             paths = [
@@ -104,14 +102,15 @@
             , extraConfig ? ""
             }:
             let
-              uniqueExtensions = lib.unique (extensions);
+              phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
+              extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
               package = phps.packages.${system}."php${pkgs.lib.strings.replaceStrings [ "." ] [ "" ] version}";
               php = package.override flags;
-              drvs = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") uniqueExtensions));
+              filteredExtensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") (lib.unique extensions)));
             in
             (php.buildEnv {
               inherit extraConfig;
-              extensions = drvs;
+              extensions = filteredExtensions;
             });
 
           derivations = rec
@@ -122,7 +121,6 @@
             php56 = makePhp {
               version = "5.6";
               extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) extensionsGroups.mandatory;
-              inherit extraConfig;
             };
 
             php56-nts = makePhp {
@@ -132,12 +130,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php70 = makePhp {
               version = "7.0";
-              inherit extraConfig;
             };
 
             php70-nts = makePhp {
@@ -146,12 +142,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php71 = makePhp {
               version = "7.1";
-              inherit extraConfig;
             };
 
             php71-nts = makePhp {
@@ -160,12 +154,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php72 = makePhp {
               version = "7.2";
-              inherit extraConfig;
             };
 
             php72-nts = makePhp {
@@ -174,12 +166,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php73 = makePhp {
               version = "7.3";
-              inherit extraConfig;
             };
 
             php73-nts = makePhp {
@@ -188,12 +178,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php74 = makePhp {
               version = "7.4";
-              inherit extraConfig;
             };
 
             php74-nts = makePhp {
@@ -202,12 +190,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php80 = makePhp {
               version = "8.0";
-              inherit extraConfig;
             };
 
             php80-nts = makePhp {
@@ -216,12 +202,10 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             php81 = makePhp {
               version = "8.1";
-              inherit extraConfig;
             };
 
             php81-nts = makePhp {
@@ -230,7 +214,6 @@
                 apxs2Support = false;
                 ztsSupport = false;
               };
-              inherit extraConfig;
             };
 
             env-default = makePhpEnv "env-php-default" derivations.php81;
