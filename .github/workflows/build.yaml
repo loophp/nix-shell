@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: 'PHP ${{ matrix.php.major }}.${{ matrix.php.minor }}'
+    name: '${{ matrix.derivation }} on ${{ matrix.operating-system }}'
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
