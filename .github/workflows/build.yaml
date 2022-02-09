@@ -40,12 +40,12 @@ jobs:
 
       - name: Build PHP NTS
         run: |
-          nix build #php${{ matrix.php.major }}-nts
+          nix build #${{ matrix.derivation }}-nts
 
       - name: Build PHP environment
         run: |
-          nix build #env-php${{ matrix.php.major }}
+          nix build #env-${{ matrix.derivation }}
 
       - name: Build PHP NTS environment
         run: |
-          nix build #env-php${{ matrix.php.major }}-nts
+          nix build #env-${{ matrix.derivation }}-nts
