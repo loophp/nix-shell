@@ -21,6 +21,30 @@ jobs:
           - php74
           - php80
           - php81
+          - php56-nts
+          - php70-nts
+          - php71-nts
+          - php72-nts
+          - php73-nts
+          - php74-nts
+          - php80-nts
+          - php81-nts
+          - env-php56
+          - env-php70
+          - env-php71
+          - env-php72
+          - env-php73
+          - env-php74
+          - env-php80
+          - env-php81
+          - env-php56-nts
+          - env-php70-nts
+          - env-php71-nts
+          - env-php72-nts
+          - env-php73-nts
+          - env-php74-nts
+          - env-php80-nts
+          - env-php81-nts
 
     steps:
       - uses: actions/checkout@v2
@@ -34,18 +58,6 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: Build PHP
+      - name: Build ${{ matrix.derivation }}
         run: |
           nix build #${{ matrix.derivation }}
-
-      - name: Build PHP NTS
-        run: |
-          nix build #${{ matrix.derivation }}-nts
-
-      - name: Build PHP environment
-        run: |
-          nix build #env-${{ matrix.derivation }}
-
-      - name: Build PHP NTS environment
-        run: |
-          nix build #env-${{ matrix.derivation }}-nts
