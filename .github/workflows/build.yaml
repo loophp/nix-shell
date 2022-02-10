@@ -60,7 +60,5 @@ jobs:
 
       - name: Build ${{ matrix.derivation }}
         run: |
-          nix build #${{ matrix.derivation }}
-          nix flake archive --json | jq --raw-output '.path, (.inputs | to_entries [] .value.path)' | cachix push nix-shell
-          nix path-info --recursive | cachix push nix-shell
+          nix build .#${{ matrix.derivation }}
 
