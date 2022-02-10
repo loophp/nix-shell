@@ -134,10 +134,12 @@
 
             php70 = makePhp {
               version = "7.0";
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
             };
 
             php70-nts = makePhp {
               version = "7.0";
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -146,10 +148,12 @@
 
             php71 = makePhp {
               version = "7.1";
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
             };
 
             php71-nts = makePhp {
               version = "7.1";
+              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
