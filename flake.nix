@@ -220,6 +220,7 @@
             env-default-nts = makePhpEnv "env-php-nts" derivations.php81-nts;
 
             env-php56 = makePhpEnv "env-php56" php56;
+            env-php70 = makePhpEnv "env-php70" php70;
             env-php71 = makePhpEnv "env-php71" php71;
             env-php72 = makePhpEnv "env-php72" php72;
             env-php73 = makePhpEnv "env-php73" php73;
@@ -228,6 +229,7 @@
             env-php81 = makePhpEnv "env-php81" php81;
 
             env-php56-nts = makePhpEnv "env-php56-nts" php56-nts;
+            env-php70-nts = makePhpEnv "env-php70-nts" php70-nts;
             env-php71-nts = makePhpEnv "env-php71-nts" php71-nts;
             env-php72-nts = makePhpEnv "env-php72-nts" php72-nts;
             env-php73-nts = makePhpEnv "env-php73-nts" php73-nts;
