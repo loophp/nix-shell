@@ -54,6 +54,7 @@
               "gmp"
               "iconv"
               "intl"
+              "json"
               "mbstring"
               "mysqli"
               "mysqlnd"
