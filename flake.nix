@@ -30,7 +30,7 @@
           composerLockPackages = readJsonSectionFromFile "composer.lock" "packages" [ ];
 
           # Merge require from Composer with "require" section of each package from Composer lock to extract extensions later
-          composerRequires = [ require ] ++ map (package: (if (package ? require) then package.require else { })) composerLockPackages;
+          composerRequires = [ require ] ++ map (package: (package.require or { })) composerLockPackages;
           # Copy keys into values
           composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) composerRequires;
           # Convert sets into lists
