@@ -49,12 +49,12 @@ extensions from `composer.json`.
 To work with `PHP 8.1` only:
 
 ```shell
-nix develop github:loophp/nix-shell#php81
+nix shell github:loophp/nix-shell#php81
 ```
 or
 
 ```shell
-nix develop github:loophp/nix-shell#env-php81
+nix shell github:loophp/nix-shell#env-php81
 ```
 
 `ZTS` is enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
@@ -81,16 +81,16 @@ Available PHP versions and environments are:
 
 This package also provide development environments with some tools:
 
-- Symfony cli
-- Github cli
-- sqlite
-- git
-- gnumake
+* Symfony cli
+* Github cli
+* sqlite
+* git
+* gnumake
 
 In order to use them, use the prefix `env-`:
 
 ```shell
-nix develop github:loophp/nix-shell#env-php81-nts
+nix shell github:loophp/nix-shell#env-php81-nts
 ```
 
 ### In another flake
@@ -115,7 +115,7 @@ Then each PHP environment will be available at
 or
 
 ```nix
-    # PHP 8.1 Non-Thread-Safe
+    # PHP 8.1 environment + Non-Thread-Safe
     phps.packages.${system}.env-php81-nts
 ```
 
@@ -124,7 +124,7 @@ or
 To customize the PHP configuration, you can do it like this:
 
 ```shell
-nix develop github:loophp/nix-shell#php81
+nix shell github:loophp/nix-shell#php81
 php -c /path/to/the/config.ini <<command>>
 ```
 
@@ -139,9 +139,8 @@ memory_limit = 2048M
 
 Then run:
 
-
 ```shell
-nix develop github:loophp/nix-shell#php81 --impure
+nix shell github:loophp/nix-shell#php81 --impure
 ```
 
 The `--impure` flag is important to make sure that your custom
