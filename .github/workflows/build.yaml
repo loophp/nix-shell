@@ -5,51 +5,44 @@ on:
   push:
 
 jobs:
+  determine-matrix:
+    name: Figure out the packages we need to build
+    runs-on: ubuntu-latest
+    needs: [dependencies]
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install the Nix package manager
+        uses: cachix/install-nix-action@v16
+
+      - id: set-matrix
+        run: |
+          echo "::set-output name=matrix::$(
+            nix eval --json --impure \
+              --expr 'builtins.attrNames (import ./.).packages.x86_64-linux'
+          )"
+
   build:
     name: '${{ matrix.derivation }} on ${{ matrix.operating-system }}'
+    needs: [determine-matrix]
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
       matrix:
+        packages: ${{fromJson(needs.determine-matrix.outputs.matrix)}}
         operating-system: [ubuntu-latest, macOS-latest]
-        derivation:
-          - php56
-          - php70
-          - php71
-          - php72
-          - php73
-          - php74
-          - php80
-          - php81
-          - php56-nts
-          - php70-nts
-          - php71-nts
-          - php72-nts
-          - php73-nts
-          - php74-nts
-          - php80-nts
-          - php81-nts
-          - env-php56
-          - env-php70
-          - env-php71
-          - env-php72
-          - env-php73
-          - env-php74
-          - env-php80
-          - env-php81
-          - env-php56-nts
-          - env-php70-nts
-          - env-php71-nts
-          - env-php72-nts
-          - env-php73-nts
-          - env-php74-nts
-          - env-php80-nts
-          - env-php81-nts
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Nix
+      - name: Install the Nix package manager
         uses: cachix/install-nix-action@v16
 
       - uses: cachix/cachix-action@v10
@@ -58,7 +51,7 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: Build ${{ matrix.derivation }}
+      - name: Build ${{ matrix.packages }}
         run: |
-          nix build .#${{ matrix.derivation }}
+          nix build .#${{ matrix.packages }}
 
