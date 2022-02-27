@@ -4,13 +4,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    phps.url = "github:fossar/nix-phps";
+    nix-phps.url = "github:fossar/nix-phps";
   };
 
   nixConfig.substituters = "https://nix-shell.cachix.org https://fossar.cachix.org";
   nixConfig.trusted-public-keys = "nix-shell.cachix.org-1:kat3KoRVbilxA6TkXEtTN9IfD4JhsQp1TPUHg652Mwc= fossar.cachix.org-1:Zv6FuqIboeHPWQS7ysLCJ7UT7xExb4OE8c4LyGb5AsE=";
 
-  outputs = { self, flake-utils, nixpkgs, phps }:
+  outputs = { self, flake-utils, nixpkgs, nix-phps }:
     flake-utils.lib.eachDefaultSystem
       (system:
         let
@@ -18,72 +18,53 @@
             inherit system;
             config = { allowUnfree = true; };
           };
+
+          # Why can't we rewrite this with an "import" ?
+          phps = nix-phps.packages.${system};
+
           lib = pkgs.lib;
 
-          readJsonSectionFromFile = file: section: default:
-            let
-              filepath = "${builtins.getEnv "PWD"}/${file}";
-              filecontent = if builtins.pathExists filepath then builtins.fromJSON (builtins.readFile filepath) else { };
-            in
-              filecontent.${section} or default;
-
-          # Get "require" section to extract extensions later
-          require = readJsonSectionFromFile "composer.json" "require" { };
-          # Get "packages" section
-          composerLockPackages = readJsonSectionFromFile "composer.lock" "packages" [ ];
-
-          # Merge require from Composer with "require" section of each package from Composer lock to extract extensions later
-          composerRequires = [ require ] ++ map (package: (package.require or { })) composerLockPackages;
-          # Copy keys into values
-          composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) composerRequires;
-          # Convert sets into lists
-          composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
-          # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
-          userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
-
-          extensionsGroups = {
-            # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
-            mandatory = [
-              "bcmath"
-              "calendar"
-              "ctype"
-              "curl"
-              "dom"
-              "exif"
-              "fileinfo"
-              "filter"
-              "gd"
-              "gettext"
-              "gmp"
-              "iconv"
-              "intl"
-              "json"
-              "mbstring"
-              "mysqli"
-              "mysqlnd"
-              "opcache"
-              "openssl"
-              "pdo"
-              "pdo_mysql"
-              "pdo_odbc"
-              "pdo_pgsql"
-              "pdo_sqlite"
-              "pgsql"
-              "posix"
-              "readline"
-              "session"
-              "simplexml"
-              "sockets"
-              "soap"
-              "sodium"
-              "sqlite3"
-              "tokenizer"
-              "xmlreader"
-              "xmlwriter"
-              "zip"
-              "zlib"
-            ] ++ userExtensions;
-          };
+          # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
+          defaultExtensions = [
+            "bcmath"
+            "calendar"
+            "ctype"
+            "curl"
+            "dom"
+            "exif"
+            "fileinfo"
+            "filter"
+            "gd"
+            "gettext"
+            "gmp"
+            "iconv"
+            "intl"
+            "json"
+            "mbstring"
+            "mysqli"
+            "mysqlnd"
+            "opcache"
+            "openssl"
+            "pdo"
+            "pdo_mysql"
+            "pdo_odbc"
+            "pdo_pgsql"
+            "pdo_sqlite"
+            "pgsql"
+            "posix"
+            "readline"
+            "session"
+            "simplexml"
+            "sockets"
+            "soap"
+            "sodium"
+            "sqlite3"
+            "tokenizer"
+            "xmlreader"
+            "xmlwriter"
+            "zip"
+            "zlib"
+          ];
 
           makePhpEnv = name: php: pkgs.buildEnv {
             inherit name;
@@ -100,21 +81,36 @@
           };
 
           makePhp =
-            { version ? "8.1"
-            , extensions ? extensionsGroups.mandatory
-            , flags ? { }
+            { php
+            , withExtensions ? [ ]
+            , withoutExtensions ? [ ]
             , extraConfig ? ""
+            , flags ? { }
             }:
             let
+              readJsonSectionFromFile = file: section: default:
+                let
+                  filepath = "${builtins.getEnv "PWD"}/${file}";
+                  filecontent = if builtins.pathExists filepath then builtins.fromJSON (builtins.readFile filepath) else { };
+                in
+                  filecontent.${section} or default;
+
+              # Get "require" section to extract extensions later
+              require = readJsonSectionFromFile "composer.json" "require" { };
+              # Copy keys into values
+              composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) [ require ];
+              # Convert sets into lists
+              composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
+              # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
+              userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
+
               phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
-              extraConfig = if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "";
-              package = phps.packages.${system}."php${pkgs.lib.strings.replaceStrings [ "." ] [ "" ] version}";
-              php = package.override flags;
-              filteredExtensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") (lib.unique extensions)));
+
+              extensions = builtins.filter (x: !builtins.elem x withoutExtensions) (lib.unique (withExtensions ++ userExtensions));
             in
-            (php.buildEnv {
-              inherit extraConfig;
-              extensions = filteredExtensions;
+            ((php.override flags).buildEnv {
+              extraConfig = extraConfig + "\n" + (if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "");
+              extensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") extensions));
             });
 
           derivations = rec
@@ -123,13 +119,15 @@
             default-nts = derivations.php81-nts;
 
             php56 = makePhp {
-              version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) extensionsGroups.mandatory;
+              php = phps.php56;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" "pcov" ];
             };
 
             php56-nts = makePhp {
-              version = "5.6";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" "pcov" ]) extensionsGroups.mandatory;
+              php = phps.php56;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" "pcov" ];
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -137,13 +135,15 @@
             };
 
             php70 = makePhp {
-              version = "7.0";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
+              php = phps.php70;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" ];
             };
 
             php70-nts = makePhp {
-              version = "7.0";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
+              php = phps.php70;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" ];
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -151,13 +151,15 @@
             };
 
             php71 = makePhp {
-              version = "7.1";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
+              php = phps.php71;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" ];
             };
 
             php71-nts = makePhp {
-              version = "7.1";
-              extensions = builtins.filter (x: !builtins.elem x [ "sodium" ]) extensionsGroups.mandatory;
+              php = phps.php71;
+              withExtensions = defaultExtensions;
+              withoutExtensions = [ "sodium" ];
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -165,11 +167,13 @@
             };
 
             php72 = makePhp {
-              version = "7.2";
+              php = phps.php72;
+              withExtensions = defaultExtensions;
             };
 
             php72-nts = makePhp {
-              version = "7.2";
+              php = phps.php72;
+              withExtensions = defaultExtensions;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -177,11 +181,13 @@
             };
 
             php73 = makePhp {
-              version = "7.3";
+              php = phps.php73;
+              withExtensions = defaultExtensions;
             };
 
             php73-nts = makePhp {
-              version = "7.3";
+              php = phps.php73;
+              withExtensions = defaultExtensions;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -189,11 +195,13 @@
             };
 
             php74 = makePhp {
-              version = "7.4";
+              php = phps.php74;
+              withExtensions = defaultExtensions;
             };
 
             php74-nts = makePhp {
-              version = "7.4";
+              php = phps.php74;
+              withExtensions = defaultExtensions;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -201,11 +209,13 @@
             };
 
             php80 = makePhp {
-              version = "8.0";
-            };
+              php = phps.php80;
+              withExtensions = defaultExtensions;
+           };
 
             php80-nts = makePhp {
-              version = "8.0";
+              php = phps.php80;
+              withExtensions = defaultExtensions;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
@@ -213,11 +223,13 @@
             };
 
             php81 = makePhp {
-              version = "8.1";
+              php = phps.php81;
+              withExtensions = defaultExtensions;
             };
 
             php81-nts = makePhp {
-              version = "8.1";
+              php = phps.php81;
+              withExtensions = defaultExtensions;
               flags = {
                 apxs2Support = false;
                 ztsSupport = false;
