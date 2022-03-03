@@ -7,9 +7,6 @@
     nix-phps.url = "github:fossar/nix-phps";
   };
 
-  nixConfig.substituters = "https://nix-shell.cachix.org https://fossar.cachix.org";
-  nixConfig.trusted-public-keys = "nix-shell.cachix.org-1:kat3KoRVbilxA6TkXEtTN9IfD4JhsQp1TPUHg652Mwc= fossar.cachix.org-1:Zv6FuqIboeHPWQS7ysLCJ7UT7xExb4OE8c4LyGb5AsE=";
-
   outputs = { self, flake-utils, nixpkgs, nix-phps }:
     flake-utils.lib.eachDefaultSystem
       (system:
