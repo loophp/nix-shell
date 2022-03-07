@@ -101,7 +101,7 @@
               # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
               userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
 
-              phpIniFile = "${builtins.getEnv "PWD"}/.php.ini";
+              phpIniFile = "${builtins.getEnv "PWD"}/.user.ini";
 
               extensions = builtins.filter (x: !builtins.elem x withoutExtensions) (lib.unique (withExtensions ++ userExtensions));
             in

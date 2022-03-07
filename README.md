@@ -128,7 +128,7 @@ nix shell github:loophp/nix-shell#php81
 php -c /path/to/the/config.ini <<command>>
 ```
 
-Another option would be to create a `.php.ini` file within your
+[Another option][doc .user.ini] would be to create a `.user.ini` file within your
 current working directory before running the PHP environment,
 as such:
 
@@ -200,3 +200,4 @@ For more detailed changelogs, please check [the release changelogs][45].
 [48]: https://github.com/fossar/nix-phps
 [50]: https://nixos.org/download.html
 [52]: https://github.com/aanderse
+[doc .user.ini]: https://www.php.net/manual/en/configuration.file.per-user.php
