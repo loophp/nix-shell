@@ -169,9 +169,7 @@
                     ztsSupport = false;
                   };
                 in
-                makePhp {
-                  inherit php flags;
-                }
+                  php.overrideAttrs (prev: flags)
               )
             ) phpDerivations;
 
