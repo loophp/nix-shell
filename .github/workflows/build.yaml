@@ -57,3 +57,14 @@ jobs:
         run: |
           nix build .#${{ matrix.packages }}
 
+      - name: Build XDebug extension
+        run: |
+          nix build .#${{ matrix.packages }}.extensions.xdebug
+
+      - name: Build pcov extension
+        run: |
+          nix build .#${{ matrix.packages }}.extensions.pcov
+
+      - name: Build oci8 extension
+        run: |
+          nix build .#${{ matrix.packages }}.extensions.oci8
