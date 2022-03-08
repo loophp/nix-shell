@@ -110,25 +110,14 @@
               extensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") extensions));
             });
 
-          derivations = rec
+          phpDerivations = rec
           {
             default = derivations.php81;
-            default-nts = derivations.php81-nts;
 
             php56 = makePhp {
               php = phps.php56;
               withExtensions = defaultExtensions;
               withoutExtensions = [ "sodium" "pcov" ];
-            };
-
-            php56-nts = makePhp {
-              php = phps.php56;
-              withExtensions = defaultExtensions;
-              withoutExtensions = [ "sodium" "pcov" ];
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
             };
 
             php70 = makePhp {
@@ -137,30 +126,10 @@
               withoutExtensions = [ "sodium" ];
             };
 
-            php70-nts = makePhp {
-              php = phps.php70;
-              withExtensions = defaultExtensions;
-              withoutExtensions = [ "sodium" ];
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
-            };
-
             php71 = makePhp {
               php = phps.php71;
               withExtensions = defaultExtensions;
               withoutExtensions = [ "sodium" ];
-            };
-
-            php71-nts = makePhp {
-              php = phps.php71;
-              withExtensions = defaultExtensions;
-              withoutExtensions = [ "sodium" ];
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
             };
 
             php72 = makePhp {
@@ -168,27 +137,9 @@
               withExtensions = defaultExtensions;
             };
 
-            php72-nts = makePhp {
-              php = phps.php72;
-              withExtensions = defaultExtensions;
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
-            };
-
             php73 = makePhp {
               php = phps.php73;
               withExtensions = defaultExtensions;
-            };
-
-            php73-nts = makePhp {
-              php = phps.php73;
-              withExtensions = defaultExtensions;
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
             };
 
             php74 = makePhp {
@@ -196,74 +147,55 @@
               withExtensions = defaultExtensions;
             };
 
-            php74-nts = makePhp {
-              php = phps.php74;
-              withExtensions = defaultExtensions;
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
-            };
-
             php80 = makePhp {
               php = phps.php80;
               withExtensions = defaultExtensions;
-           };
-
-            php80-nts = makePhp {
-              php = phps.php80;
-              withExtensions = defaultExtensions;
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
             };
 
             php81 = makePhp {
               php = phps.php81;
               withExtensions = defaultExtensions;
             };
-
-            php81-nts = makePhp {
-              php = phps.php81;
-              withExtensions = defaultExtensions;
-              flags = {
-                apxs2Support = false;
-                ztsSupport = false;
-              };
-            };
-
-            env-default = makePhpEnv "env-php-default" derivations.php81;
-            env-default-nts = makePhpEnv "env-php-nts" derivations.php81-nts;
-
-            env-php56 = makePhpEnv "env-php56" php56;
-            env-php70 = makePhpEnv "env-php70" php70;
-            env-php71 = makePhpEnv "env-php71" php71;
-            env-php72 = makePhpEnv "env-php72" php72;
-            env-php73 = makePhpEnv "env-php73" php73;
-            env-php74 = makePhpEnv "env-php74" php74;
-            env-php80 = makePhpEnv "env-php80" php80;
-            env-php81 = makePhpEnv "env-php81" php81;
-
-            env-php56-nts = makePhpEnv "env-php56-nts" php56-nts;
-            env-php70-nts = makePhpEnv "env-php70-nts" php70-nts;
-            env-php71-nts = makePhpEnv "env-php71-nts" php71-nts;
-            env-php72-nts = makePhpEnv "env-php72-nts" php72-nts;
-            env-php73-nts = makePhpEnv "env-php73-nts" php73-nts;
-            env-php74-nts = makePhpEnv "env-php74-nts" php74-nts;
-            env-php80-nts = makePhpEnv "env-php80-nts" php80-nts;
-            env-php81-nts = makePhpEnv "env-php81-nts" php81-nts;
           };
+
+          # Build PHP NTS.
+          phpDerivationsWithNts = phpDerivations // lib.mapAttrs' (name: php:
+            lib.nameValuePair
+              (name + "-nts")
+              (
+                let
+                  flags = {
+                    apxs2Support = false;
+                    ztsSupport = false;
+                  };
+                in
+                makePhp {
+                  inherit php flags;
+                }
+              )
+            ) phpDerivations;
+
+          # Build PHP environments.
+          derivations = phpDerivationsWithNts // lib.mapAttrs' (name: php:
+            let
+              pname = "env-" + name;
+            in
+            lib.nameValuePair
+              (pname)
+              (makePhpEnv pname php)
+            ) phpDerivationsWithNts;
         in
         {
+          # This is deprecated in Nix 2.7.0
           defaultPackage = derivations.default-nts;
 
-          packages = derivations;
-
+          # This is deprecated in Nix 2.7.0
           devShell = pkgs.mkShellNoCC {
             name = derivations.default.name;
             buildInputs = [ derivations.default-nts ];
           };
+
+          packages = derivations;
 
           devShells = builtins.mapAttrs
             (name: value: pkgs.mkShellNoCC {
