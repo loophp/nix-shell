@@ -58,16 +58,19 @@ jobs:
           nix build .#${{ matrix.packages }}
 
       - name: Build XDebug extension
+        if: "!contains( matrix.packages, 'env-' )"
         continue-on-error: true
         run: |
           nix build .#${{ matrix.packages }}.extensions.xdebug
 
       - name: Build pcov extension
+        if: "!contains( matrix.packages, 'env-' )"
         continue-on-error: true
         run: |
           nix build .#${{ matrix.packages }}.extensions.pcov
 
       - name: Build oci8 extension
+        if: "!contains( matrix.packages, 'env-' )"
         continue-on-error: true
         run: |
           nix build .#${{ matrix.packages }}.extensions.oci8
