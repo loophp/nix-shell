@@ -169,7 +169,7 @@
                     ztsSupport = false;
                   };
                 in
-                  php.overrideAttrs (prev: flags)
+                  (php.override flags)
               )
             ) phpDerivations;
 
