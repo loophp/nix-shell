@@ -26,21 +26,30 @@ Available PHP versions from `5.6` to `8.1`.
 The PHP extensions to use are automatically inferred
 from the `composer.json` and `composer.lock` files.
 
-To load the `xdebug` and `pcov` extensions, edit `composer.json` as such:
-
 ```json
 ...8<...
 
 "require": {
+  "ext-intl": "*",
+},
+"require-dev": {
   "ext-xdebug": "*",
   "ext-pcov": "*",
 }
 
 ...>8...
 ```
+Loading extensions from the `require` section of the `composer.json` file
+requires the use of the nix `shell` command.
 
-Do not forget to add the flag `--impure` when loading custom
-extensions from `composer.json`.
+However, if you want to load extensions from `require` and `required-dev`
+sections, using the nix `develop` command is required.
+
+Use `nix shell` to load the `ext-intl` extension only or `nix develop` to load
+`ext-intl`, `ext-xdebug` and `ext-pcov` extensions.
+
+Do not forget to add the flag `--impure` when you want to load extensions from
+`composer.json`.
 
 ## Usage
 

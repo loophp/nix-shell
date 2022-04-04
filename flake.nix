@@ -77,13 +77,7 @@
             ];
           };
 
-          makePhp =
-            { php
-            , withExtensions ? [ ]
-            , withoutExtensions ? [ ]
-            , extraConfig ? ""
-            , flags ? { }
-            }:
+          getExtensionFromComposerSection = section:
             let
               readJsonSectionFromFile = file: section: default:
                 let
@@ -93,17 +87,28 @@
                   filecontent.${section} or default;
 
               # Get "require" section to extract extensions later
-              require = readJsonSectionFromFile "composer.json" "require" { };
+              require = readJsonSectionFromFile "composer.json" section { };
               # Copy keys into values
               composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) [ require ];
               # Convert sets into lists
               composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
+            in
               # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
-              userExtensions = map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
+              map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
 
+          requiredExts = getExtensionFromComposerSection "require";
+          requiredDevExts = getExtensionFromComposerSection "require-dev";
+
+          makePhp =
+            { php
+            , withExtensions ? [ ]
+            , withoutExtensions ? [ ]
+            , extraConfig ? ""
+            , flags ? { }
+            }:
+            let
               phpIniFile = "${builtins.getEnv "PWD"}/.user.ini";
-
-              extensions = builtins.filter (x: !builtins.elem x withoutExtensions) (lib.unique (withExtensions ++ userExtensions));
+              extensions = builtins.filter (x: !builtins.elem x withoutExtensions) (lib.unique withExtensions);
             in
             ((php.override flags).buildEnv {
               extraConfig = extraConfig + "\n" + (if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "");
@@ -112,49 +117,49 @@
 
           phpDerivations = rec
           {
-            default = derivations.php81;
+            default = phpDerivations.php81;
 
-            php56 = makePhp {
+            php56 = {
               php = phps.php56;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
               withoutExtensions = [ "sodium" "pcov" ];
             };
 
-            php70 = makePhp {
+            php70 = {
               php = phps.php70;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
               withoutExtensions = [ "sodium" ];
             };
 
-            php71 = makePhp {
+            php71 = {
               php = phps.php71;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
               withoutExtensions = [ "sodium" ];
             };
 
-            php72 = makePhp {
+            php72 = {
               php = phps.php72;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
             };
 
-            php73 = makePhp {
+            php73 = {
               php = phps.php73;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
             };
 
-            php74 = makePhp {
+            php74 = {
               php = phps.php74;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
             };
 
-            php80 = makePhp {
+            php80 = {
               php = phps.php80;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
             };
 
-            php81 = makePhp {
+            php81 = {
               php = phps.php81;
-              withExtensions = defaultExtensions;
+              withExtensions = defaultExtensions ++ requiredExts;
             };
           };
 
@@ -163,44 +168,82 @@
             lib.nameValuePair
               (name + "-nts")
               (
-                let
+                php // {
                   flags = {
                     apxs2Support = false;
                     ztsSupport = false;
                   };
-                in
-                  (php.override flags)
+                }
               )
             ) phpDerivations;
-
-          # Build PHP environments.
-          derivations = phpDerivationsWithNts // lib.mapAttrs' (name: php:
-            let
-              pname = "env-" + name;
-            in
-            lib.nameValuePair
-              (pname)
-              (makePhpEnv pname php)
-            ) phpDerivationsWithNts;
         in
         {
-          # This is deprecated in Nix 2.7.0
-          defaultPackage = derivations.default-nts;
-
-          # This is deprecated in Nix 2.7.0
-          devShell = pkgs.mkShellNoCC {
-            name = derivations.default.name;
-            buildInputs = [ derivations.default-nts ];
-          };
-
-          packages = derivations;
-
-          devShells = builtins.mapAttrs
-            (name: value: pkgs.mkShellNoCC {
+          # In use for "nix shell"
+          packages = builtins.mapAttrs
+            (name: phpConfig: pkgs.buildEnv {
               inherit name;
-              buildInputs = [ value ];
+              paths = [
+                (makePhp {
+                  php = phpConfig.php;
+                  flags = phpConfig.flags or {};
+                  withExtensions = phpConfig.withExtensions;
+                  withoutExtensions = phpConfig.withoutExtensions or [];
+                })
+              ];
             })
-            derivations;
+            phpDerivationsWithNts //
+            lib.mapAttrs' (name: phpConfig:
+              let
+                pname = "env-" + name;
+              in
+              lib.nameValuePair
+                (pname)
+                (
+                  makePhpEnv pname (makePhp {
+                    php = phpConfig.php;
+                    flags = phpConfig.flags or {};
+                    withExtensions = phpConfig.withExtensions;
+                    withoutExtensions = phpConfig.withoutExtensions or [];
+                  })
+                )
+              ) phpDerivationsWithNts;
+
+          # In use for "nix develop"
+          devShells = builtins.mapAttrs
+            (name: phpConfig: pkgs.mkShellNoCC {
+              inherit name;
+              buildInputs = [
+                (makePhp {
+                  php = phpConfig.php;
+                  flags = phpConfig.flags or {};
+                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
+                  withoutExtensions = phpConfig.withoutExtensions or [];
+                })
+              ];
+            })
+            phpDerivationsWithNts //
+            lib.mapAttrs' (name: phpConfig:
+              let
+                phpEnv = makePhpEnv name (makePhp {
+                  php = phpConfig.php;
+                  flags = phpConfig.flags or {};
+                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
+                  withoutExtensions = phpConfig.withoutExtensions or [];
+                });
+              in
+                let
+                  pname = "env-" + name;
+                in
+                lib.nameValuePair
+                  (pname)
+                  (
+                    pkgs.mkShellNoCC {
+                      name = pname;
+                      buildInputs = [ phpEnv ];
+                    }
+                  )
+                )
+            phpDerivationsWithNts;
         }
       );
 }
