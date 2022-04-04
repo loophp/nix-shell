@@ -93,8 +93,8 @@
               # Convert sets into lists
               composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
             in
-            # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
-            map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
+              # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
+              map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
 
           requiredExts = getExtensionFromComposerSection "require";
           requiredDevExts = getExtensionFromComposerSection "require-dev";
@@ -115,9 +115,9 @@
               extensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") extensions));
             });
 
-          phpConfigs = rec
+          phpDerivations = rec
           {
-            default = phpConfigs.php81;
+            default = phpDerivations.php81;
 
             php56 = {
               php = phps.php56;
@@ -163,38 +163,36 @@
             };
           };
 
-          # Build PHP NTS configurations.
-          phpConfigsWithNts = phpConfigs // lib.mapAttrs'
-            (name: php:
-              lib.nameValuePair
-                (name + "-nts")
-                (
-                  php // {
-                    flags = {
-                      apxs2Support = false;
-                      ztsSupport = false;
-                    };
-                  }
-                )
-            )
-            phpConfigs;
-
-          # Build PHP environments (simple + extended)
-          phpEnvs = builtins.mapAttrs
+          # Build PHP NTS.
+          phpDerivationsWithNts = phpDerivations // lib.mapAttrs' (name: php:
+            lib.nameValuePair
+              (name + "-nts")
+              (
+                php // {
+                  flags = {
+                    apxs2Support = false;
+                    ztsSupport = false;
+                  };
+                }
+              )
+            ) phpDerivations;
+        in
+        {
+          # In use for "nix shell"
+          packages = builtins.mapAttrs
             (name: phpConfig: pkgs.buildEnv {
               inherit name;
               paths = [
                 (makePhp {
                   php = phpConfig.php;
-                  flags = phpConfig.flags or { };
+                  flags = phpConfig.flags or {};
                   withExtensions = phpConfig.withExtensions;
-                  withoutExtensions = phpConfig.withoutExtensions or [ ];
+                  withoutExtensions = phpConfig.withoutExtensions or [];
                 })
               ];
             })
-            phpConfigsWithNts //
-          lib.mapAttrs'
-            (name: phpConfig:
+            phpDerivationsWithNts //
+            lib.mapAttrs' (name: phpConfig:
               let
                 pname = "env-" + name;
               in
@@ -203,27 +201,49 @@
                 (
                   makePhpEnv pname (makePhp {
                     php = phpConfig.php;
-                    flags = phpConfig.flags or { };
+                    flags = phpConfig.flags or {};
                     withExtensions = phpConfig.withExtensions;
-                    withoutExtensions = phpConfig.withoutExtensions or [ ];
+                    withoutExtensions = phpConfig.withoutExtensions or [];
                   })
                 )
-            )
-            phpConfigsWithNts;
-        in
-        {
-          # In use for "nix shell"
-          packages = phpEnvs;
+              ) phpDerivationsWithNts;
 
           # In use for "nix develop"
           devShells = builtins.mapAttrs
-            (name: phpEnv: pkgs.mkShellNoCC {
+            (name: phpConfig: pkgs.mkShellNoCC {
               inherit name;
               buildInputs = [
-                phpEnv
+                (makePhp {
+                  php = phpConfig.php;
+                  flags = phpConfig.flags or {};
+                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
+                  withoutExtensions = phpConfig.withoutExtensions or [];
+                })
               ];
             })
-            phpEnvs;
+            phpDerivationsWithNts //
+            lib.mapAttrs' (name: phpConfig:
+              let
+                phpEnv = makePhpEnv name (makePhp {
+                  php = phpConfig.php;
+                  flags = phpConfig.flags or {};
+                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
+                  withoutExtensions = phpConfig.withoutExtensions or [];
+                });
+              in
+                let
+                  pname = "env-" + name;
+                in
+                lib.nameValuePair
+                  (pname)
+                  (
+                    pkgs.mkShellNoCC {
+                      name = pname;
+                      buildInputs = [ phpEnv ];
+                    }
+                  )
+                )
+            phpDerivationsWithNts;
         }
       );
 }
