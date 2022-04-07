@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install the Nix package manager
-        uses: cachix/install-nix-action@v16
+        uses: cachix/install-nix-action@v17
 
       - id: set-matrix
         run: |
@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install the Nix package manager
-        uses: cachix/install-nix-action@v16
+        uses: cachix/install-nix-action@v17
 
       - uses: cachix/cachix-action@v10
         with:
