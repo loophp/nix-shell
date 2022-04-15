@@ -148,17 +148,17 @@
             };
 
             php74 = {
-              php = phps.php74;
+              php = pkgs.php74;
               withExtensions = defaultExtensions ++ requiredExts;
             };
 
             php80 = {
-              php = phps.php80;
+              php = pkgs.php80;
               withExtensions = defaultExtensions ++ requiredExts;
             };
 
             php81 = {
-              php = phps.php81;
+              php = pkgs.php81;
               withExtensions = defaultExtensions ++ requiredExts;
             };
           };
