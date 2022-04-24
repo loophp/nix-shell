@@ -38,15 +38,16 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1650369889,
-        "narHash": "sha256-wejF1AQ2/9KfcSoxHnajp7vyQi3ULS4gpk8qZi/r+W4=",
+        "lastModified": 1650812729,
+        "narHash": "sha256-iiSFoZCY3BOtuujrByeIFlGlxiMjGTvXA+Zgm1zJF98=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "324e8a7757897a36628041afa2742084a83fca65",
+        "rev": "b8f03baa5a10121f408be0b32196c049f26b6d41",
         "type": "github"
       },
       "original": {
         "owner": "fossar",
+        "ref": "php/fix-intl-extensions-compilation",
         "repo": "nix-phps",
         "type": "github"
       }

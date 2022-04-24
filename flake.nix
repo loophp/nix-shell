@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    nix-phps.url = "github:fossar/nix-phps";
+    nix-phps.url = "github:fossar/nix-phps/php/fix-intl-extensions-compilation";
   };
 
   outputs = { self, flake-utils, nixpkgs, nix-phps }:
