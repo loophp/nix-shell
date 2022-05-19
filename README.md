@@ -39,6 +39,7 @@ from the `composer.json` and `composer.lock` files.
 
 ...>8...
 ```
+
 Loading extensions from the `require` section of the `composer.json` file
 requires the use of the nix `shell` command.
 
@@ -51,6 +52,15 @@ Use `nix shell` to load the `ext-intl` extension only or `nix develop` to load
 Do not forget to add the flag `--impure` when you want to load extensions from
 `composer.json`.
 
+We use [Cachix](https://app.cachix.org/cache/nix-shell) to store binaries of the
+built packages. Install it as described in its [docs](https://docs.cachix.org/)
+and then add the cache using `cachix use nix-shell` if you want to avoid
+building those PHP packages yourself.
+
+```shell
+cachix use nix-shell
+```
+
 ## Usage
 
 ### In a shell
@@ -60,6 +70,7 @@ To work with `PHP 8.1` only:
 ```shell
 nix shell github:loophp/nix-shell#php81
 ```
+
 or
 
 ```shell
@@ -153,7 +164,7 @@ nix shell github:loophp/nix-shell#php81 --impure
 ```
 
 The `--impure` flag is important to make sure that your custom
-`.php.ini` file is correctly taken in account.
+`.user.ini` file is correctly taken in account.
 
 ## Contributing
 
