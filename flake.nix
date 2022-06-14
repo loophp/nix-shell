@@ -150,7 +150,7 @@
             };
 
             php74 = {
-              php = pkgs.php74;
+              php = phps.php74;
               withExtensions = defaultExtensions ++ requiredExts;
             };
 
