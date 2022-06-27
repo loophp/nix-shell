@@ -63,6 +63,11 @@ cachix use nix-shell
 
 ## Usage
 
+While being extremely stable for years, "[flake][nix flake]" is an upcoming
+feature of the Nix package manager. In order to use it, you must explicitly
+enable it, please check the documentation to enable it, this is currently an
+opt-in option.
+
 ### In a shell
 
 To work with `PHP 8.1` only:
@@ -221,3 +226,4 @@ For more detailed changelogs, please check [the release changelogs][45].
 [50]: https://nixos.org/download.html
 [52]: https://github.com/aanderse
 [doc .user.ini]: https://www.php.net/manual/en/configuration.file.per-user.php
+[nix flake]: https://nixos.wiki/wiki/Flakes
