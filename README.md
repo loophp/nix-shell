@@ -103,6 +103,8 @@ Available PHP versions and environments are:
 * `env-php80`, `env-php80-nts`
 * `php81`, `php81-nts`
 * `env-php81`, `env-php81-nts`
+* `php82`, `php82-nts`
+* `env-php82`, `env-php82-nts`
 
 This package also provide development environments with some tools:
 

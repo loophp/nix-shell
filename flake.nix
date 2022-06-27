@@ -163,6 +163,11 @@
               php = pkgs.php81;
               withExtensions = defaultExtensions ++ requiredExts;
             };
+
+            php82 = {
+              php = phps.php82;
+              withExtensions = defaultExtensions ++ requiredExts;
+            };
           };
 
           # Build PHP NTS.
