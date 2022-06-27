@@ -167,6 +167,7 @@
             php82 = {
               php = phps.php82;
               withExtensions = defaultExtensions ++ requiredExts;
+              withoutExtensions = [ "json" ];
             };
           };
 
