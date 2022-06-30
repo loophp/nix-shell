@@ -6,7 +6,6 @@
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.nixpkgs.follows = "nixpkgs";
     nix-phps.url = "github:fossar/nix-phps";
-    nix-phps.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, flake-utils, nixpkgs, nix-phps }:
