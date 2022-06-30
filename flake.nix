@@ -10,248 +10,104 @@
   };
 
   outputs = { self, flake-utils, nixpkgs, nix-phps }:
+  let
+    phps = import ./src/phps.nix nixpkgs nix-phps;
+
+    api = phps;
+  in {
+    inherit api;
+  } //
     flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-            config = { allowUnfree = true; };
-          };
+          pkgs = import ./src/pkgs.nix nixpkgs system;
 
-          # Why can't we rewrite this with an "import" ?
-          phps = nix-phps.packages.${system};
+          makePhp = phps.makePhp system;
+          makePhpEnv = phps.makePhpEnv system;
 
-          lib = pkgs.lib;
-
-          # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
-          defaultExtensions = [
-            "bcmath"
-            "calendar"
-            "ctype"
-            "curl"
-            "dom"
-            "exif"
-            "fileinfo"
-            "filter"
-            "gd"
-            "gettext"
-            "gmp"
-            "iconv"
-            "intl"
-            "json"
-            "mbstring"
-            "mysqli"
-            "mysqlnd"
-            "opcache"
-            "openssl"
-            "pdo"
-            "pdo_mysql"
-            "pdo_odbc"
-            "pdo_pgsql"
-            "pdo_sqlite"
-            "pgsql"
-            "posix"
-            "readline"
-            "session"
-            "simplexml"
-            "sockets"
-            "soap"
-            "sodium"
-            "sqlite3"
-            "tokenizer"
-            "xmlreader"
-            "xmlwriter"
-            "zip"
-            "zlib"
-          ];
-
-          makePhpEnv = name: php: pkgs.buildEnv {
-            inherit name;
-            paths = [
-              php
-              php.packages.composer
-            ] ++ [
-              pkgs.symfony-cli
-              pkgs.gh
-              pkgs.sqlite
-              pkgs.git
-              pkgs.gnumake
-            ];
-          };
-
-          getExtensionFromComposerSection = section:
-            let
-              readJsonSectionFromFile = file: section: default:
-                let
-                  filepath = "${builtins.getEnv "PWD"}/${file}";
-                  filecontent = if builtins.pathExists filepath then builtins.fromJSON (builtins.readFile filepath) else { };
-                in
-                  filecontent.${section} or default;
-
-              # Get "require" section to extract extensions later
-              require = readJsonSectionFromFile "composer.json" section { };
-              # Copy keys into values
-              composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: v: lib.nameValuePair k k) p) [ require ];
-              # Convert sets into lists
-              composerRequiresMap = map (package: (map (key: builtins.getAttr key package) (builtins.attrNames package))) composerRequiresKeys;
-            in
-              # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
-              map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (lib.flatten composerRequiresMap));
-
-          requiredExts = getExtensionFromComposerSection "require";
-          requiredDevExts = getExtensionFromComposerSection "require-dev";
-
-          makePhp =
-            { php
-            , withExtensions ? [ ]
-            , withoutExtensions ? [ ]
-            , extraConfig ? ""
-            , flags ? { }
-            }:
-            let
-              phpIniFile = "${builtins.getEnv "PWD"}/.user.ini";
-              extensions = builtins.filter (x: !builtins.elem x withoutExtensions) (lib.unique withExtensions);
-            in
-            ((php.override flags).buildEnv {
-              extraConfig = extraConfig + "\n" + (if builtins.pathExists "${phpIniFile}" then builtins.readFile "${phpIniFile}" else "");
-              extensions = { all, ... }: (map (ext: all."${ext}") (builtins.filter (ext: all ? "${ext}") extensions));
-            });
-
-          phpDerivations = rec
-          {
-            default = phpDerivations.php81;
-
-            php56 = {
-              php = phps.php56;
-              withExtensions = defaultExtensions ++ requiredExts;
-              withoutExtensions = [ "sodium" "pcov" ];
-            };
-
-            php70 = {
-              php = phps.php70;
-              withExtensions = defaultExtensions ++ requiredExts;
-              withoutExtensions = [ "sodium" ];
-            };
-
-            php71 = {
-              php = phps.php71;
-              withExtensions = defaultExtensions ++ requiredExts;
-              withoutExtensions = [ "sodium" ];
-            };
-
-            php72 = {
-              php = phps.php72;
-              withExtensions = defaultExtensions ++ requiredExts;
-            };
-
-            php73 = {
-              php = phps.php73;
-              withExtensions = defaultExtensions ++ requiredExts;
-            };
-
-            php74 = {
-              php = phps.php74;
-              withExtensions = defaultExtensions ++ requiredExts;
-            };
-
-            php80 = {
-              php = pkgs.php80;
-              withExtensions = defaultExtensions ++ requiredExts;
-            };
-
-            php81 = {
-              php = pkgs.php81;
-              withExtensions = defaultExtensions ++ requiredExts;
-            };
-
-            php82 = {
-              php = phps.php82;
-              withExtensions = defaultExtensions ++ requiredExts;
-              withoutExtensions = [ "json" ];
-            };
-          };
-
-          # Build PHP NTS.
-          phpDerivationsWithNts = phpDerivations // lib.mapAttrs' (name: php:
-            lib.nameValuePair
-              (name + "-nts")
-              (
-                php // {
-                  flags = {
-                    apxs2Support = false;
-                    ztsSupport = false;
-                  };
-                }
-              )
-            ) phpDerivations;
-        in
-        {
-          # In use for "nix shell"
-          packages = builtins.mapAttrs
-            (name: phpConfig: pkgs.buildEnv {
-              inherit name;
-              paths = [
-                (makePhp {
-                  php = phpConfig.php;
-                  flags = phpConfig.flags or {};
-                  withExtensions = phpConfig.withExtensions;
-                  withoutExtensions = phpConfig.withoutExtensions or [];
-                })
-              ];
-            })
-            phpDerivationsWithNts //
-            lib.mapAttrs' (name: phpConfig:
+          # Simple PHP environments
+          shellEnvs = builtins.mapAttrs
+            (
+              name: phpConfig:
               let
-                pname = "env-" + name;
+                phpConfigUpdated = (builtins.removeAttrs phpConfig ["devExtensions"]);
               in
-              lib.nameValuePair
-                (pname)
-                (
-                  makePhpEnv pname (makePhp {
-                    php = phpConfig.php;
-                    flags = phpConfig.flags or {};
-                    withExtensions = phpConfig.withExtensions;
-                    withoutExtensions = phpConfig.withoutExtensions or [];
-                  })
-                )
-              ) phpDerivationsWithNts;
+              pkgs.buildEnv
+              {
+                inherit name;
 
-          # In use for "nix develop"
-          devShells = builtins.mapAttrs
-            (name: phpConfig: pkgs.mkShellNoCC {
-              inherit name;
-              buildInputs = [
-                (makePhp {
-                  php = phpConfig.php;
-                  flags = phpConfig.flags or {};
-                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
-                  withoutExtensions = phpConfig.withoutExtensions or [];
-                })
-              ];
-            })
-            phpDerivationsWithNts //
-            lib.mapAttrs' (name: phpConfig:
-              let
-                phpEnv = makePhpEnv name (makePhp {
-                  php = phpConfig.php;
-                  flags = phpConfig.flags or {};
-                  withExtensions = phpConfig.withExtensions ++ requiredDevExts;
-                  withoutExtensions = phpConfig.withoutExtensions or [];
-                });
-              in
+                paths = [
+                  (makePhp phpConfigUpdated)
+                ];
+              }
+            )
+            phps.matrix;
+
+          # Augmented PHP environments with other packages
+          shellEnvsAugmented = nixpkgs.lib.mapAttrs'
+            (
+              name: phpConfig:
                 let
                   pname = "env-" + name;
+                  phpConfigUpdated = (builtins.removeAttrs phpConfig ["devExtensions"]);
                 in
-                lib.nameValuePair
+                pkgs.lib.nameValuePair
+                  (pname)
+                  (
+                    makePhpEnv pname (makePhp phpConfigUpdated)
+                  )
+            )
+            phps.matrix;
+
+            # Simple PHP development environments
+            devShells = builtins.mapAttrs
+            (
+              name: phpConfig:
+                let
+                  pname = name;
+                  phpConfigUpdated = phpConfig // { extensions = phpConfig.extensions ++ phpConfig.devExtensions; };
+                  php = makePhp (builtins.removeAttrs phpConfigUpdated ["devExtensions"]);
+                in
+                  pkgs.mkShellNoCC {
+                    name = pname;
+
+                    buildInputs = [
+                      php
+                    ];
+                  }
+            )
+            phps.matrix;
+
+            # Augmented PHP development environments with other packages
+            devShellsAugmented = nixpkgs.lib.mapAttrs'
+            (
+              name: phpConfig:
+                let
+                  pname = "env-" + name;
+                  phpConfigUpdated = phpConfig // { extensions = phpConfig.extensions ++ phpConfig.devExtensions; };
+                  php = makePhp (builtins.removeAttrs phpConfigUpdated ["devExtensions"]);
+                  env = makePhpEnv pname php;
+                in
+                pkgs.lib.nameValuePair
                   (pname)
                   (
                     pkgs.mkShellNoCC {
                       name = pname;
-                      buildInputs = [ phpEnv ];
+
+                      buildInputs = [
+                        env
+                      ];
                     }
                   )
-                )
-            phpDerivationsWithNts;
+            )
+            phps.matrix;
+        in
+        {
+          # In use for "nix shell"
+          packages = shellEnvs // shellEnvsAugmented;
+
+          # In use for "nix develop"
+          devShells = devShells // devShellsAugmented;
         }
       );
 }

@@ -126,7 +126,7 @@ Import the input:
 
 ```nix
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     phps.url = "github:loophp/nix-shell";
   };
@@ -144,6 +144,57 @@ or
 ```nix
     # PHP 8.1 environment + Non-Thread-Safe
     phps.packages.${system}.env-php81-nts
+```
+
+You may also use the API to build your own custom version of PHP in your own
+flake:
+
+```nix
+{
+  description = "A very basic flake";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    nix-shell.url = "github:loophp/nix-shell";
+  };
+
+  outputs = { self, nixpkgs, flake-utils, nix-shell }:
+    flake-utils.lib.eachDefaultSystem
+      (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+
+          php = (nix-shell.api.makePhp system {
+            php = "php81";
+            extensions = [ "pcov" "xdebug" ];
+            withoutExtensions = [ "sodium" ];
+            extraConfig = ''
+              memory_limit=-1
+            '';
+            flags = {
+              apxs2Support = false;
+              ztsSupport = false;
+            };
+          });
+        in
+        {
+          devShells = {
+            default = pkgs.mkShellNoCC {
+              name = "PHP project";
+
+              buildInputs = [
+                php
+                php.packages.composer
+                pkgs.mailhog
+              ];
+            };
+          };
+        }
+      );
+}
 ```
 
 ### Customize PHP
