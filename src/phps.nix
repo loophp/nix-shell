@@ -167,7 +167,7 @@ let
 
   makePhpEnv = system: name: php:
   let
-    pkgs = import ./pkgs.nix nixpkgs system;
+    pkgs = import ./pkgs.nix nixpkgs nix-phps system;
   in
   pkgs.buildEnv {
     inherit name;
