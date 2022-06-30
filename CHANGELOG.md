@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Commits
 
+- fix: Add default `withoutExtensions` attribute. [`93097d8`](https://github.com/loophp/nix-shell/commit/93097d86e35485d496b3fe4f4d58318d94d59797)
+- fix: Remove `json` extensions from PHP &gt;= 8. [`5134360`](https://github.com/loophp/nix-shell/commit/5134360e6924e5f88ad974ac219f383060b4ee49)
+- flake lock update [`e949488`](https://github.com/loophp/nix-shell/commit/e949488b7eebb3551344316b82aba24fbfbda9be)
+- fix: Remove `nixpkgs.follow` line. [`0c413ab`](https://github.com/loophp/nix-shell/commit/0c413ab2bd5bf7ade40d72052d4d1f8d559666c9)
+- ci: Trigger tests when specific file changes only. [`b067ce0`](https://github.com/loophp/nix-shell/commit/b067ce0319381125d8ed685b66b699269576e0f7)
+- fix: let `extensions` have a default value. [`f40d13e`](https://github.com/loophp/nix-shell/commit/f40d13ef725e4de1263c36ee6384c2a32e402b63)
+- docs: Add/Update changelog. [`2b7474c`](https://github.com/loophp/nix-shell/commit/2b7474cb7ff4788136b8330aefcefb59b8acd0cb)
 - fix: add `withExtensions` attribute to avoid deleting existing default set of extensions. [`9439ba2`](https://github.com/loophp/nix-shell/commit/9439ba269bfcd26bc21c83a10f9741a9cd2ae87c)
 - fix: Udpate default extensions set when building custom PHP version. [`01b94a1`](https://github.com/loophp/nix-shell/commit/01b94a1487f26c031221bc6e7e7e2610f64aab95)
 - docs: Add/Update changelog. [`3575816`](https://github.com/loophp/nix-shell/commit/357581662b0c8200132309d92a0fb29f80d633b0)
