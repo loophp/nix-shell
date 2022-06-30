@@ -61,6 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Commits
 
+- fix: add `withExtensions` attribute to avoid deleting existing default set of extensions. [`9439ba2`](https://github.com/loophp/nix-shell/commit/9439ba269bfcd26bc21c83a10f9741a9cd2ae87c)
+- fix: Udpate default extensions set when building custom PHP version. [`01b94a1`](https://github.com/loophp/nix-shell/commit/01b94a1487f26c031221bc6e7e7e2610f64aab95)
+- docs: Add/Update changelog. [`3575816`](https://github.com/loophp/nix-shell/commit/357581662b0c8200132309d92a0fb29f80d633b0)
 - docs: Update `README`. [`5e2b086`](https://github.com/loophp/nix-shell/commit/5e2b086353f51ab1c4101fb5b2a6e4697ea94d7b)
 - Update README. [`f224ad4`](https://github.com/loophp/nix-shell/commit/f224ad463afed0f350b13df136d4d15e7941f4cb)
 - Rewrite and refactor everyting. [`82c900d`](https://github.com/loophp/nix-shell/commit/82c900d52a823386580ee0d8a3fe61ed55a7b6c2)
