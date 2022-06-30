@@ -19,7 +19,6 @@ let
     "gmp"
     "iconv"
     "intl"
-    "json"
     "mbstring"
     "mysqli"
     "mysqlnd"
@@ -54,41 +53,41 @@ let
     default = phpMatrix.php81;
 
     php56 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php56";
       withoutExtensions = [ "sodium" "pcov" ];
     };
 
     php70 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php70";
       withoutExtensions = [ "sodium" ];
     };
 
     php71 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php71";
       withoutExtensions = [ "sodium" ];
     };
 
     php72 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php72";
     };
 
     php73 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php73";
     };
 
     php74 = {
-      inherit extensions;
       inherit devExtensions;
+      extensions = extensions ++ [ "json" ];
       php = "php74";
     };
 
@@ -96,25 +95,22 @@ let
       inherit extensions;
       inherit devExtensions;
       php = "php80";
-      withoutExtensions = [ "json" ];
     };
 
     php81 = {
       inherit extensions;
       inherit devExtensions;
       php = "php81";
-      withoutExtensions = [ "json" ];
     };
 
     php82 = {
       inherit extensions;
       inherit devExtensions;
       php = "php82";
-      withoutExtensions = [ "json" ];
     };
   };
 
-  # Build PHP NTS.
+  # Build NTS versions.
   matrix = phpMatrix // nixpkgs.lib.mapAttrs' (name: php:
     nixpkgs.lib.nameValuePair
       (name + "-nts")
@@ -144,7 +140,10 @@ let
       pkgs = import ./pkgs.nix nixpkgs system;
       nixphps = import ./nixphps.nix nix-phps system;
 
-      withExtensions = builtins.filter (x: !builtins.elem x withoutExtensions) (pkgs.lib.unique extensions);
+      withExtensions = builtins.filter
+        (x: !builtins.elem x withoutExtensions)
+        (pkgs.lib.unique (if extensions == [] then phpMatrix."${php}".extensions or [] else extensions));
+
       phpDrv = if builtins.isString php then (nixphps."${php}" or pkgs."${php}") else php;
     in
     ((phpDrv.override flags).buildEnv {
