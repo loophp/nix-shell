@@ -131,6 +131,7 @@ let
     {
     php
     , extensions ? [ ]
+    , withExtensions ? [ ]
     , withoutExtensions ? [ ]
     , extraConfig ? ""
     , extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini"
@@ -140,9 +141,9 @@ let
       pkgs = import ./pkgs.nix nixpkgs system;
       nixphps = import ./nixphps.nix nix-phps system;
 
-      withExtensions = builtins.filter
+      withExtensionsFiltered = builtins.filter
         (x: !builtins.elem x withoutExtensions)
-        (pkgs.lib.unique (if extensions == [] then phpMatrix."${php}".extensions or [] else extensions));
+        (pkgs.lib.unique (phpMatrix."${php}".extensions) ++ withExtensions);
 
       phpDrv = if builtins.isString php then (nixphps."${php}" or pkgs."${php}") else php;
     in
@@ -154,7 +155,7 @@ let
           (
             builtins.filter
               (ext: if builtins.isString ext then all ? "${ext}" else ext)
-              withExtensions
+              withExtensionsFiltered
           )
       );
     });

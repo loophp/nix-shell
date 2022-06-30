@@ -168,7 +168,7 @@ flake:
 
           php = (nix-shell.api.makePhp system {
             php = "php81";
-            extensions = [ "pcov" "xdebug" ];
+            withExtensions = [ "pcov" "xdebug" ];
             withoutExtensions = [ "sodium" ];
             extraConfig = ''
               memory_limit=-1
