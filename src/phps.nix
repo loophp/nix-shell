@@ -144,14 +144,13 @@ let
     , flags ? { }
     }:
     let
-      pkgs = import ./pkgs.nix nixpkgs system;
-      nixphps = import ./nixphps.nix nix-phps system;
+      pkgs = import ./pkgs.nix nixpkgs nix-phps system;
 
       withExtensionsFiltered = builtins.filter
         (x: !builtins.elem x withoutExtensions)
         (pkgs.lib.unique extensions ++ withExtensions);
 
-      phpDrv = if builtins.isString php then (nixphps."${php}" or pkgs."${php}") else php;
+      phpDrv = if builtins.isString php then pkgs."${php}" else php;
     in
     ((phpDrv.override flags).buildEnv {
       extraConfig = extraConfig + "\n" + (if builtins.pathExists "${extraConfigFile}" then builtins.readFile "${extraConfigFile}" else "");

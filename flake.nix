@@ -19,7 +19,7 @@
     flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = import ./src/pkgs.nix nixpkgs system;
+          pkgs = import ./src/pkgs.nix nixpkgs nix-phps system;
 
           makePhp = phps.makePhp system;
           makePhpEnv = phps.makePhpEnv system;
