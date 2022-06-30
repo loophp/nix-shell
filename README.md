@@ -1,5 +1,4 @@
 [![GitHub stars][github stars]][1]
- [![License][license]][1]
  [![Donate!][donate github]][5]
 
 # Nix shell
@@ -21,10 +20,10 @@ Each available environment provides the following tools:
 * Symfony CLi,
 * GNU Make.
 
-Available PHP versions from `5.6` to `8.1`.
+Available PHP versions from `5.6` to `8.2`.
 
 The PHP extensions to use are automatically inferred
-from the `composer.json` and `composer.lock` files.
+from the `composer.json` file.
 
 ```json
 ...8<...
@@ -70,19 +69,19 @@ opt-in option.
 
 ### In a shell
 
-To work with `PHP 8.1` only:
+To work with PHP 8.1 only:
 
 ```shell
 nix shell github:loophp/nix-shell#php81
 ```
 
-or
+or with PHP 8.1 and a couple of useful tools:
 
 ```shell
 nix shell github:loophp/nix-shell#env-php81
 ```
 
-`ZTS` is enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
+PHP has `ZTS` enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
 feel free to use the `NTS` if needed, see the matrix below.
 
 Available PHP versions and environments are:
@@ -108,11 +107,11 @@ Available PHP versions and environments are:
 
 This package also provide development environments with some tools:
 
-* Symfony cli
-* Github cli
-* sqlite
-* git
-* gnumake
+* [Symfony cli](https://github.com/symfony-cli/symfony-cli)
+* [Github cli](https://cli.github.com/)
+* [sqlite](https://www.sqlite.org/)
+* [git](https://git-scm.com/)
+* [gnumake](https://www.gnu.org/software/make/)
 
 In order to use them, use the prefix `env-`:
 
