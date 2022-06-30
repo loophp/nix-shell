@@ -130,7 +130,7 @@ let
     system:
     {
     php
-    , extensions ? [ ]
+    , extensions ? phpMatrix."${php}".extensions
     , withExtensions ? [ ]
     , withoutExtensions ? [ ]
     , extraConfig ? ""
@@ -143,7 +143,7 @@ let
 
       withExtensionsFiltered = builtins.filter
         (x: !builtins.elem x withoutExtensions)
-        (pkgs.lib.unique (phpMatrix."${php}".extensions) ++ withExtensions);
+        (pkgs.lib.unique extensions ++ withExtensions);
 
       phpDrv = if builtins.isString php then (nixphps."${php}" or pkgs."${php}") else php;
     in
