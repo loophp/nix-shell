@@ -94,18 +94,21 @@ let
     php80 = {
       inherit extensions;
       inherit devExtensions;
+      withoutExtensions = [ "json" ];
       php = "php80";
     };
 
     php81 = {
       inherit extensions;
       inherit devExtensions;
+      withoutExtensions = [ "json" ];
       php = "php81";
     };
 
     php82 = {
       inherit extensions;
       inherit devExtensions;
+      withoutExtensions = [ "json" ];
       php = "php82";
     };
   };
