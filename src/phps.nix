@@ -55,39 +55,42 @@ let
     php56 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
-      php = "php56";
       withoutExtensions = [ "sodium" "pcov" ];
+      php = "php56";
     };
 
     php70 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
-      php = "php70";
       withoutExtensions = [ "sodium" ];
+      php = "php70";
     };
 
     php71 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
-      php = "php71";
       withoutExtensions = [ "sodium" ];
+      php = "php71";
     };
 
     php72 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
+      withoutExtensions = [ ];
       php = "php72";
     };
 
     php73 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
+      withoutExtensions = [ ];
       php = "php73";
     };
 
     php74 = {
       inherit devExtensions;
       extensions = extensions ++ [ "json" ];
+      withoutExtensions = [ ];
       php = "php74";
     };
 
@@ -135,7 +138,7 @@ let
     php
     , extensions ? phpMatrix."${php}".extensions
     , withExtensions ? [ ]
-    , withoutExtensions ? [ ]
+    , withoutExtensions ? phpMatrix."${php}".withoutExtensions
     , extraConfig ? ""
     , extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini"
     , flags ? { }
