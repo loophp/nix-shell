@@ -97,21 +97,18 @@ let
     php80 = {
       inherit extensions;
       inherit devExtensions;
-      withoutExtensions = [ "json" ];
       php = "php80";
     };
 
     php81 = {
       inherit extensions;
       inherit devExtensions;
-      withoutExtensions = [ "json" ];
       php = "php81";
     };
 
     php82 = {
       inherit extensions;
       inherit devExtensions;
-      withoutExtensions = [ "json" ];
       php = "php82";
     };
   };
@@ -138,7 +135,7 @@ let
     php
     , extensions ? phpMatrix."${php}".extensions
     , withExtensions ? [ ]
-    , withoutExtensions ? phpMatrix."${php}".withoutExtensions
+    , withoutExtensions ? (phpMatrix."${php}".withoutExtensions or [])
     , extraConfig ? ""
     , extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini"
     , flags ? { }
@@ -155,13 +152,19 @@ let
     ((phpDrv.override flags).buildEnv {
       extraConfig = extraConfig + "\n" + (if builtins.pathExists "${extraConfigFile}" then builtins.readFile "${extraConfigFile}" else "");
       extensions = { all, ... }: (
-        map
-          (ext: if builtins.isString ext then all."${ext}" else ext)
-          (
-            builtins.filter
-              (ext: if builtins.isString ext then all ? "${ext}" else ext)
-              withExtensionsFiltered
-          )
+        # We remove "null" extensions (like json for php >= 8)
+        # See: https://github.com/fossar/nix-phps/pull/122
+        builtins.filter
+        (ext: ext != null)
+        (
+          map
+            (ext: if builtins.isString ext then all."${ext}" else ext)
+            (
+              builtins.filter
+                (ext: if builtins.isString ext then all ? "${ext}" else ext)
+                withExtensionsFiltered
+            )
+        )
       );
     });
 
