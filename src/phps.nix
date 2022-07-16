@@ -45,50 +45,43 @@ let
     "zlib"
   ];
 
-  extensions = defaultExtensions ++ composer.getExtensionFromSection "require";
-  devExtensions = composer.getExtensionFromSection "require-dev";
+  extensions = defaultExtensions ++ composer.getExtensionFromSection "require" ++ composer.getExtensionFromSection "require-dev";
 
   phpMatrix = rec
   {
     default = phpMatrix.php81;
 
     php56 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ "sodium" "pcov" ];
       php = "php56";
     };
 
     php70 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ "sodium" ];
       php = "php70";
     };
 
     php71 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ "sodium" ];
       php = "php71";
     };
 
     php72 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ ];
       php = "php72";
     };
 
     php73 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ ];
       php = "php73";
     };
 
     php74 = {
-      inherit devExtensions;
       extensions = extensions ++ [ "json" ];
       withoutExtensions = [ ];
       php = "php74";
@@ -96,19 +89,16 @@ let
 
     php80 = {
       inherit extensions;
-      inherit devExtensions;
       php = "php80";
     };
 
     php81 = {
       inherit extensions;
-      inherit devExtensions;
       php = "php81";
     };
 
     php82 = {
       inherit extensions;
-      inherit devExtensions;
       php = "php82";
     };
   };

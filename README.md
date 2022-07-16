@@ -22,8 +22,8 @@ Each available environment provides the following tools:
 
 Available PHP versions from `5.6` to `8.2`.
 
-The PHP extensions to use are automatically inferred
-from the `composer.json` file.
+The PHP extensions to use are automatically inferred from the `composer.json`
+file.
 
 ```json
 ...8<...
@@ -39,17 +39,12 @@ from the `composer.json` file.
 ...>8...
 ```
 
-Loading extensions from the `require` section of the `composer.json` file
-requires the use of the nix `shell` command.
+To load extensions from `require` and `required-dev` sections, using the flag
+`--impure` is required. Exemple:
 
-However, if you want to load extensions from `require` and `required-dev`
-sections, using the nix `develop` command is required.
-
-Use `nix shell` to load the `ext-intl` extension only or `nix develop` to load
-`ext-intl`, `ext-xdebug` and `ext-pcov` extensions.
-
-Do not forget to add the flag `--impure` when you want to load extensions from
-`composer.json`.
+```shell
+nix shell github:loophp/nix-shell#php82 --impure
+```
 
 We use [Cachix](https://app.cachix.org/cache/nix-shell) to store binaries of the
 built packages. Install it as described in its [docs](https://docs.cachix.org/)
@@ -196,6 +191,21 @@ flake:
 }
 ```
 
+### With direnv
+
+`direnv` is an extension for your shell. It augments existing shells with a new
+feature that can load and unload environment variables depending on the current
+directory. You can use it within Nix ([nix-direnv][nix direnv]) and load a
+development environment just by changing directory.
+
+Edit the file `.envrc` and add the line:
+
+```
+use flake github:loophp/nix-shell#env-php81-nts --impure
+```
+
+And it's done !
+
 ### Customize PHP
 
 To customize the PHP configuration, you can do it like this:
@@ -279,3 +289,4 @@ For more detailed changelogs, please check [the release changelogs][45].
 [52]: https://github.com/aanderse
 [doc .user.ini]: https://www.php.net/manual/en/configuration.file.per-user.php
 [nix flake]: https://nixos.wiki/wiki/Flakes
+[nix direnv]: https://github.com/nix-community/nix-direnv

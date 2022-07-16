@@ -27,16 +27,12 @@
           # Simple PHP environments
           shellEnvs = builtins.mapAttrs
             (
-              name: phpConfig:
-              let
-                phpConfigUpdated = (builtins.removeAttrs phpConfig ["devExtensions"]);
-              in
-              pkgs.buildEnv
+              name: phpConfig: pkgs.buildEnv
               {
                 inherit name;
 
                 paths = [
-                  (makePhp phpConfigUpdated)
+                  (makePhp phpConfig)
                 ];
               }
             )
@@ -48,12 +44,11 @@
               name: phpConfig:
                 let
                   pname = "env-" + name;
-                  phpConfigUpdated = (builtins.removeAttrs phpConfig ["devExtensions"]);
                 in
                 pkgs.lib.nameValuePair
                   (pname)
                   (
-                    makePhpEnv pname (makePhp phpConfigUpdated)
+                    makePhpEnv pname (makePhp phpConfig)
                   )
             )
             phps.matrix;
@@ -61,19 +56,13 @@
             # Simple PHP development environments
             devShells = builtins.mapAttrs
             (
-              name: phpConfig:
-                let
-                  pname = name;
-                  phpConfigUpdated = phpConfig // { extensions = phpConfig.extensions ++ phpConfig.devExtensions; };
-                  php = makePhp (builtins.removeAttrs phpConfigUpdated ["devExtensions"]);
-                in
-                  pkgs.mkShellNoCC {
-                    name = pname;
+              name: phpConfig: pkgs.mkShellNoCC {
+                inherit name;
 
-                    buildInputs = [
-                      php
-                    ];
-                  }
+                buildInputs = [
+                  (makePhp phpConfig)
+                ];
+              }
             )
             phps.matrix;
 
@@ -83,9 +72,7 @@
               name: phpConfig:
                 let
                   pname = "env-" + name;
-                  phpConfigUpdated = phpConfig // { extensions = phpConfig.extensions ++ phpConfig.devExtensions; };
-                  php = makePhp (builtins.removeAttrs phpConfigUpdated ["devExtensions"]);
-                  env = makePhpEnv pname php;
+                  env = makePhpEnv pname (makePhp phpConfig);
                 in
                 pkgs.lib.nameValuePair
                   (pname)
