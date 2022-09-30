@@ -38,11 +38,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1664095147,
-        "narHash": "sha256-aS6tbZ13o4iAeGjtlm5t8lffObNKjakExbzxHL0dSAE=",
+        "lastModified": 1664532505,
+        "narHash": "sha256-6OfilS4uYG4MU5HhnO/B9rnbaw1E1gFPwxihQZFhlys=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "bfaf24fc8353f3d8b7cbcbe461bd19223ebb8b24",
+        "rev": "41b078031cb443900280780fd69ba31e17c6b263",
         "type": "github"
       },
       "original": {
@@ -69,11 +69,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1664117201,
-        "narHash": "sha256-6QVOY28vj9eJqTVW5bT65hfY6qwmUi+fclgbRMotAzI=",
+        "lastModified": 1664435807,
+        "narHash": "sha256-sYOAzHDloPQH48Nmp2hFf7mvVRv+AOlfQXNaCeBTykE=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f3e200bd7fa6f62edbfad82fe9fefe7b02f28603",
+        "rev": "8ba120420fbdd9bd35b3a5366fa0206d8c99ade3",
         "type": "github"
       },
       "original": {
