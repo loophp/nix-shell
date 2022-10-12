@@ -2,10 +2,6 @@ name: Builds
 
 on:
   pull_request:
-  push:
-    paths:
-    - '**.nix'
-    - flake.lock
 
 jobs:
   determine-matrix:
