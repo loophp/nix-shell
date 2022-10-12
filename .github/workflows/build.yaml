@@ -50,7 +50,7 @@ jobs:
       - name: Install the Nix package manager
         uses: cachix/install-nix-action@v17
 
-      - uses: cachix/cachix-action@v10
+      - uses: cachix/cachix-action@v11
         with:
           name: nix-shell
           # If you chose API tokens for write access OR if you have a private cache
