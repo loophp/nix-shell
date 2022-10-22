@@ -175,11 +175,8 @@ let
       pkgs.gnumake
     ];
   };
-
-  phps = {
-    matrix = matrix;
+in {
+    inherit makePhpEnv;
+    matrix = matrix // {default = matrix.php81-nts;};
     makePhp = makePhp nixpkgs nix-phps;
-    makePhpEnv = makePhpEnv;
-  };
-in
-  phps
+}
