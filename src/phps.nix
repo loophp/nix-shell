@@ -1,5 +1,7 @@
-nixpkgs:
 nix-phps:
+nixpkgs:
+final:
+prev:
 
 let
   composer = import ./composer.nix nixpkgs;
@@ -118,9 +120,7 @@ let
     ) phpMatrix;
 
   makePhp =
-    nixpkgs:
-    nix-phps:
-    system:
+    pkgs:
     {
     php
     , extensions ? phpMatrix."${php}".extensions
@@ -131,8 +131,6 @@ let
     , flags ? { }
     }:
     let
-      pkgs = import ./pkgs.nix nixpkgs nix-phps system;
-
       withExtensionsFiltered = builtins.filter
         (x: !builtins.elem x withoutExtensions)
         (pkgs.lib.unique extensions ++ withExtensions);
@@ -158,11 +156,7 @@ let
       );
     });
 
-  makePhpEnv = system: name: php:
-  let
-    pkgs = import ./pkgs.nix nixpkgs nix-phps system;
-  in
-  pkgs.buildEnv {
+  makePhpEnv = name: php: pkgs: pkgs.buildEnv {
     inherit name;
 
     paths = [
@@ -176,7 +170,8 @@ let
     ];
   };
 in {
-    inherit makePhpEnv;
-    matrix = matrix // {default = matrix.php81-nts;};
-    makePhp = makePhp nixpkgs nix-phps;
+    loophp-nix-shell = {
+      inherit makePhp makePhpEnv composer;
+      matrix = matrix // {default = matrix.php81-nts;};
+    };
 }

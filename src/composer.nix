@@ -19,9 +19,7 @@ let
     in
       # Convert the set into a list, filter out values not starting with "ext-", get rid of the first 4 characters from the name
       map (x: builtins.substring 4 (builtins.stringLength x) x) (builtins.filter (x: (builtins.substring 0 4 x) == "ext-") (nixpkgs.lib.flatten composerRequiresMap));
-
-  composer = {
-    inherit getExtensionFromSection;
-  };
 in
-  composer
+  {
+    inherit getExtensionFromSection;
+  }

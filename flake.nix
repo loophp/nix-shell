@@ -8,20 +8,23 @@
   };
 
   outputs = { self, flake-utils, nixpkgs, nix-phps }:
-  let
-    phps = import ./src/phps.nix nixpkgs nix-phps;
-
-    api = phps;
-  in {
-    inherit api;
+  {
+    overlays.default = import ./src/phps.nix nix-phps nixpkgs;
   } //
     flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = import ./src/pkgs.nix nixpkgs nix-phps system;
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              nix-phps.overlays.default
+              self.overlays.default
+            ];
+            # This is only needed for the PHP oci8 extension.
+            config = { allowUnfree = true; };
+          };
 
-          makePhp = phps.makePhp system;
-          makePhpEnv = phps.makePhpEnv system;
+          inherit (pkgs.loophp-nix-shell) matrix makePhp makePhpEnv;
 
           # Simple PHP environments
           shellEnvs = builtins.mapAttrs
@@ -31,11 +34,11 @@
                 inherit name;
 
                 paths = [
-                  (makePhp phpConfig)
+                  (makePhp pkgs phpConfig)
                 ];
               }
             )
-            phps.matrix;
+            matrix;
 
           # Augmented PHP environments with other packages
           shellEnvsAugmented = nixpkgs.lib.mapAttrs'
@@ -47,10 +50,10 @@
                 pkgs.lib.nameValuePair
                   (pname)
                   (
-                    makePhpEnv pname (makePhp phpConfig)
+                    makePhpEnv pname (makePhp pkgs phpConfig) pkgs
                   )
             )
-            phps.matrix;
+            matrix;
 
             # Simple PHP development environments
             devShells = builtins.mapAttrs
@@ -63,7 +66,7 @@
                 ];
               }
             )
-            phps.matrix;
+            matrix;
 
             # Augmented PHP development environments with other packages
             devShellsAugmented = nixpkgs.lib.mapAttrs'
@@ -71,7 +74,7 @@
               name: phpConfig:
                 let
                   pname = "env-" + name;
-                  env = makePhpEnv pname (makePhp phpConfig);
+                  env = makePhpEnv pname (makePhp pkgs phpConfig);
                 in
                 pkgs.lib.nameValuePair
                   (pname)
@@ -85,7 +88,7 @@
                     }
                   )
             )
-            phps.matrix;
+            matrix;
         in
         {
           # In use for "nix shell"
