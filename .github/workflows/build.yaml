@@ -2,6 +2,9 @@ name: Builds
 
 on:
   pull_request:
+  push:
+    branches:
+      - 'master'
 
 jobs:
   determine-matrix:
