@@ -38,6 +38,7 @@ let
     "soap"
     "sodium"
     "sqlite3"
+    "sysvsem"
     "tokenizer"
     "xmlreader"
     "xmlwriter"
