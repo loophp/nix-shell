@@ -1,5 +1,5 @@
 [![GitHub stars][github stars]][1]
- [![Donate!][donate github]][5]
+[![Donate!][donate github]][5]
 
 # Nix shell
 
@@ -9,16 +9,16 @@
 
 This package provides a `Nix flake` ready to use
 for PHP development, using the [`Nix` package manager][50]
-which can be installed on (*almost*) any operating system.
+which can be installed on (_almost_) any operating system.
 
 Each available environment provides the following tools:
 
-* Custom `php.ini` loading,
-* Composer,
-* Git,
-* Github CLi,
-* Symfony CLi,
-* GNU Make.
+- Custom `php.ini` loading,
+- Composer,
+- Git,
+- Github CLi,
+- Symfony CLi,
+- GNU Make.
 
 Available PHP versions from `5.6` to `8.2`.
 
@@ -76,42 +76,33 @@ or with PHP 8.1 and a couple of useful tools:
 nix shell github:loophp/nix-shell#env-php81
 ```
 
-PHP has `ZTS` enabled by default (see [#154774](https://github.com/NixOS/nixpkgs/issues/154774)),
-feel free to use the `NTS` if needed, see the matrix below.
+Since the 14th of November 2022, PHP is in `NTS` mode by default (see
+[#154774](https://github.com/NixOS/nixpkgs/issues/154774)).
 
 Available PHP versions and environments are:
 
-* `php56`, `php56-nts`
-* `env-php56`, `env-php56-nts`
-* `php70`, `php70-nts`
-* `env-php70`, `env-php70-nts`
-* `php71`, `php71-nts`
-* `env-php71`, `env-php71-nts`
-* `php72`, `php72-nts`
-* `env-php72`, `env-php72-nts`
-* `php73`, `php73-nts`
-* `env-php73`, `env-php73-nts`
-* `php74`, `php74-nts`
-* `env-php74`, `env-php74-nts`
-* `php80`, `php80-nts`
-* `env-php80`, `env-php80-nts`
-* `php81`, `php81-nts`
-* `env-php81`, `env-php81-nts`
-* `php82`, `php82-nts`
-* `env-php82`, `env-php82-nts`
+- `php56`, `env-php56`
+- `php70`, `env-php70`
+- `php71`, `env-php71`
+- `php72`, `env-php72`
+- `php73`, `env-php73`
+- `php74`, `env-php74`
+- `php80`, `env-php80`
+- `php81`, `env-php81`
+- `php82`, `env-php82`
 
 This package also provide development environments with some tools:
 
-* [Symfony cli](https://github.com/symfony-cli/symfony-cli)
-* [Github cli](https://cli.github.com/)
-* [sqlite](https://www.sqlite.org/)
-* [git](https://git-scm.com/)
-* [gnumake](https://www.gnu.org/software/make/)
+- [Symfony cli](https://github.com/symfony-cli/symfony-cli)
+- [Github cli](https://cli.github.com/)
+- [sqlite](https://www.sqlite.org/)
+- [git](https://git-scm.com/)
+- [gnumake](https://www.gnu.org/software/make/)
 
 In order to use them, use the prefix `env-`:
 
 ```shell
-nix shell github:loophp/nix-shell#env-php81-nts
+nix shell github:loophp/nix-shell#env-php81
 ```
 
 ### In another flake
@@ -129,15 +120,15 @@ Import the input:
 Then each PHP environment will be available at
 
 ```nix
-    # PHP 8.1 Non-Thread-Safe only
-    phps.packages.${system}.php81-nts
+    # PHP 8.1
+    phps.packages.${system}.php81
 ```
 
 or
 
 ```nix
-    # PHP 8.1 environment + Non-Thread-Safe
-    phps.packages.${system}.env-php81-nts
+    # PHP 8.1 environment
+    phps.packages.${system}.env-php81
 ```
 
 You may also use the API to build your own custom version of PHP in your own
@@ -201,7 +192,7 @@ development environment just by changing directory.
 Edit the file `.envrc` and add the line:
 
 ```
-use flake github:loophp/nix-shell#env-php81-nts --impure
+use flake github:loophp/nix-shell#env-php81 --impure
 ```
 
 And it's done !
@@ -248,8 +239,8 @@ Sponsor me on [Github][5] and/or any of [the contributors][6].
 
 ## Thanks
 
-* [Jan Tojnar][47] for assisting me into incorporating his [own package][48].
-* [Aaron Anderse][52] for improving the code and giving some tips.
+- [Jan Tojnar][47] for assisting me into incorporating his [own package][48].
+- [Aaron Anderse][52] for improving the code and giving some tips.
 
 ## Changelog
 

@@ -104,20 +104,6 @@ let
     };
   };
 
-  # Build NTS versions.
-  matrix = phpMatrix // nixpkgs.lib.mapAttrs' (name: php:
-    nixpkgs.lib.nameValuePair
-      (name + "-nts")
-      (
-        php // {
-          flags = {
-            apxs2Support = false;
-            ztsSupport = false;
-          };
-        }
-      )
-    ) phpMatrix;
-
   makePhp =
     nixpkgs:
     nix-phps:
@@ -178,6 +164,6 @@ let
   };
 in {
     inherit makePhpEnv;
-    matrix = matrix // {default = matrix.php81-nts;};
+    matrix = phpMatrix // {default = phpMatrix.php81;};
     makePhp = makePhp nixpkgs nix-phps;
 }
