@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "::set-output name=matrix::$(
             nix eval --json --impure \
-              --expr 'builtins.attrNames (import ./.).packages.x86_64-linux'
+              --expr 'builtins.filter (x: (null == builtins.match "(.*)-nts" x)) (builtins.attrNames (import ./.).packages.x86_64-linux)'
           )"
 
   build:
