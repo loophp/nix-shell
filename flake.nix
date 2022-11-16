@@ -78,7 +78,13 @@
                 pkgs.lib.nameValuePair
                   (pname)
                   (
-                    makePhpEnv pname (makePhp phpConfig)
+                    pkgs.mkShellNoCC {
+                      name = pname;
+
+                      buildInputs = [
+                        (makePhpEnv pname (makePhp phpConfig))
+                      ];
+                    }
                   )
             )
             phps.matrix;
