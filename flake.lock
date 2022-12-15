@@ -38,11 +38,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1671128567,
-        "narHash": "sha256-usBZtbhHr/Baec78iDjwkNcZmDNJMfjJ2chpfBygoGE=",
+        "lastModified": 1671131421,
+        "narHash": "sha256-tV1ZR9nMotRyWGq2utissrsjUjTji8fbjS2L/XXXtYE=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "d2a1a333bbdf4fdd233645e4eaf383c6d79e49b5",
+        "rev": "da7b739d5617807c2f637d041de82704617561e4",
         "type": "github"
       },
       "original": {
