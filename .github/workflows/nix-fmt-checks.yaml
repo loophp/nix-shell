@@ -17,14 +17,4 @@ jobs:
         uses: cachix/install-nix-action@v18
 
       - name: Run nix formatter tool
-        run: nix fmt
-
-      - name: Verify Changed files
-        uses: tj-actions/verify-changed-files@v13
-        id: verify_changed_files
-
-      - name: Files has changed
-        if: steps.verify_changed_files.outputs.files_changed == 'true'
-        run: |
-          echo "Repository has uncommitted changes, run nix fmt locally and commit the result."
-          exit 1
+        run: nix fmt . -- --check
