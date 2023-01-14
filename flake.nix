@@ -7,23 +7,18 @@
     nix-phps.url = "github:fossar/nix-phps";
   };
 
-  outputs = {
-    self,
-    flake-utils,
-    nixpkgs,
-    nix-phps,
-  }: let
-    phps = import ./src/phps.nix nixpkgs nix-phps;
+  outputs = inputs: let
+    phps = import ./src/phps.nix inputs.nixpkgs inputs.nix-phps;
 
     api = phps;
   in
     {
       inherit api;
     }
-    // flake-utils.lib.eachDefaultSystem
+    // inputs.flake-utils.lib.eachDefaultSystem
     (
       system: let
-        pkgs = import ./src/pkgs.nix nixpkgs nix-phps system;
+        pkgs = import ./src/pkgs.nix inputs.nixpkgs inputs.nix-phps system;
 
         makePhp = phps.makePhp system;
         makePhpEnv = phps.makePhpEnv system;
@@ -51,7 +46,7 @@
               }
           )
           phps.matrix
-          // nixpkgs.lib.mapAttrs'
+          // inputs.nixpkgs.lib.mapAttrs'
           (
             name: phpConfig: let
               pname = "env-" + name;
@@ -77,7 +72,7 @@
                 }
             )
             phps.matrix)
-          // nixpkgs.lib.mapAttrs'
+          // inputs.nixpkgs.lib.mapAttrs'
           (
             name: phpConfig: let
               pname = "env-" + name;
@@ -101,7 +96,7 @@
         # In use for "nix shell"
         packages =
           packages
-          // nixpkgs.lib.mapAttrs'
+          // inputs.nixpkgs.lib.mapAttrs'
           (
             name: phpConfig:
               pkgs.lib.nameValuePair
@@ -113,7 +108,7 @@
         # In use for "nix develop"
         devShells =
           devShells
-          // nixpkgs.lib.mapAttrs'
+          // inputs.nixpkgs.lib.mapAttrs'
           (
             name: phpConfig:
               pkgs.lib.nameValuePair
