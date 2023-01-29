@@ -3,34 +3,34 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
     nix-phps.url = "github:fossar/nix-phps";
   };
 
-  outputs = inputs: let
+  outputs = inputs @ {flake-parts, ...}: let
     phps = import ./src/phps.nix inputs.nixpkgs inputs.nix-phps;
-
-    api = phps;
   in
-    {
-      inherit api;
-    }
-    // inputs.flake-utils.lib.eachDefaultSystem
-    (
-      system: let
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      flake = {
+        api = phps;
+      };
+
+      systems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+
+      perSystem = {
+        config,
+        pkgs,
+        system,
+        ...
+      }: let
         pkgs = import ./src/pkgs.nix inputs.nixpkgs inputs.nix-phps system;
 
         makePhp = phps.makePhp system;
         makePhpEnv = phps.makePhpEnv system;
-
-        errorMsg = ''
-          ********************************************************************
-          Since the 14th of November 2022, PHP is built by default
-          in NTS mode (see https://github.com/NixOS/nixpkgs/pull/194172).
-          Therefore, the '-nts' suffix is obsolete and can be now removed from
-          your command line or from your '.envrc' file.
-          ********************************************************************
-        '';
 
         packages =
           builtins.mapAttrs
@@ -93,29 +93,9 @@
       in {
         formatter = pkgs.alejandra;
 
-        # In use for "nix shell"
-        packages =
-          packages
-          // inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig:
-              pkgs.lib.nameValuePair
-              (name + "-nts")
-              (throw errorMsg)
-          )
-          packages;
+        packages = packages;
 
-        # In use for "nix develop"
-        devShells =
-          devShells
-          // inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig:
-              pkgs.lib.nameValuePair
-              (name + "-nts")
-              (throw errorMsg)
-          )
-          devShells;
-      }
-    );
+        devShells = devShells;
+      };
+    };
 }
