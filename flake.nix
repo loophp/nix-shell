@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-phps.url = "github:fossar/nix-phps";
+    nix-phps.url = "github:fossar/nix-phps/no-dropped-patch";
   };
 
   outputs = inputs @ {flake-parts, ...}: let
