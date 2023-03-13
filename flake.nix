@@ -6,20 +6,22 @@
     nix-phps.url = "github:fossar/nix-phps";
   };
 
-  outputs = inputs @ {flake-parts, ...}: let
-    phps = import ./src/phps.nix inputs.nixpkgs inputs.nix-phps;
-  in
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
-      flake = {
-        api = phps;
-      };
-
       systems = [
         "x86_64-linux"
         "x86_64-darwin"
         "aarch64-linux"
         "aarch64-darwin"
       ];
+
+      flake = {
+        api = import ./src/phps.nix inputs.nixpkgs inputs.nix-phps;
+      };
 
       perSystem = {
         config,
@@ -29,8 +31,8 @@
       }: let
         pkgs = import ./src/pkgs.nix inputs.nixpkgs inputs.nix-phps system;
 
-        makePhp = phps.makePhp system;
-        makePhpEnv = phps.makePhpEnv system;
+        makePhp = self.api.makePhp system;
+        makePhpEnv = self.api.makePhpEnv system;
 
         packages =
           builtins.mapAttrs
@@ -45,7 +47,7 @@
                 ];
               }
           )
-          phps.matrix
+          self.api.matrix
           // inputs.nixpkgs.lib.mapAttrs'
           (
             name: phpConfig: let
@@ -57,45 +59,11 @@
                 makePhpEnv pname (makePhp phpConfig)
               )
           )
-          phps.matrix;
-
-        devShells =
-          (builtins.mapAttrs
-            (
-              name: phpConfig:
-                pkgs.mkShellNoCC {
-                  inherit name;
-
-                  buildInputs = [
-                    (makePhp phpConfig)
-                  ];
-                }
-            )
-            phps.matrix)
-          // inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig: let
-              pname = "env-" + name;
-            in
-              pkgs.lib.nameValuePair
-              pname
-              (
-                pkgs.mkShellNoCC {
-                  name = pname;
-
-                  buildInputs = [
-                    (makePhpEnv pname (makePhp phpConfig))
-                  ];
-                }
-              )
-          )
-          phps.matrix;
+          self.api.matrix;
       in {
         formatter = pkgs.alejandra;
 
         packages = packages;
-
-        devShells = devShells;
       };
     };
 }
