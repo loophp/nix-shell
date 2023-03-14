@@ -1,4 +1,4 @@
-nixpkgs: nix-phps: let
+nixpkgs: let
   composer = import ./composer.nix nixpkgs;
 
   # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
@@ -101,7 +101,7 @@ nixpkgs: nix-phps: let
     };
   };
 
-  makePhp = nixpkgs: nix-phps: system: {
+  makePhp = nixpkgs: pkgs: {
     php,
     extensions ? phpMatrix."${php}".extensions,
     withExtensions ? [],
@@ -110,8 +110,6 @@ nixpkgs: nix-phps: let
     extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini",
     flags ? {},
   }: let
-    pkgs = import ./pkgs.nix nixpkgs nix-phps system;
-
     withExtensionsFiltered =
       builtins.filter
       (x: !builtins.elem x withoutExtensions)
@@ -152,25 +150,7 @@ nixpkgs: nix-phps: let
       )
     );
   });
-
-  makePhpEnv = system: name: php: let
-    pkgs = import ./pkgs.nix nixpkgs nix-phps system;
-  in
-    pkgs.buildEnv {
-      inherit name;
-
-      paths = [
-        php
-        php.packages.composer
-        pkgs.symfony-cli
-        pkgs.gh
-        pkgs.sqlite
-        pkgs.git
-        pkgs.gnumake
-      ];
-    };
 in {
-  inherit makePhpEnv;
   matrix = phpMatrix // {default = phpMatrix.php81;};
-  makePhp = makePhp nixpkgs nix-phps;
+  makePhp = makePhp nixpkgs;
 }
