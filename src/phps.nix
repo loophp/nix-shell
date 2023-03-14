@@ -1,5 +1,5 @@
-nixpkgs: let
-  composer = import ./composer.nix nixpkgs;
+{inputs, ...}: let
+  composer = import ./composer.nix inputs.nixpkgs;
 
   # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
   defaultExtensions = [
@@ -151,6 +151,8 @@ nixpkgs: let
     );
   });
 in {
-  matrix = phpMatrix // {default = phpMatrix.php81;};
-  makePhp = makePhp nixpkgs;
+  flake.api = {
+    matrix = phpMatrix // {default = phpMatrix.php81;};
+    makePhp = makePhp inputs.nixpkgs;
+  };
 }

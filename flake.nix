@@ -19,9 +19,9 @@
         "aarch64-darwin"
       ];
 
-      flake = {
-        api = import ./src/phps.nix inputs.nixpkgs;
-      };
+      imports = [
+        ./src/phps.nix
+      ];
 
       perSystem = {
         config,
