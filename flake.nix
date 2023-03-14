@@ -47,13 +47,16 @@
           (
             name: phpConfig: let
               pname = "env-${phpConfig.php}";
+              php = makePhp phpConfig;
+
             in
               pkgs.lib.nameValuePair
               pname
               (pkgs.buildEnv {
                 name = pname;
                 paths = [
-                  (makePhp phpConfig)
+                  php
+                  php.packages.composer
                   pkgs.symfony-cli
                   pkgs.gh
                   pkgs.sqlite
@@ -84,13 +87,15 @@
           (
             name: phpConfig: let
               pname = "env-${phpConfig.php}";
+              php = makePhp phpConfig;
             in
               pkgs.lib.nameValuePair
               pname
               (pkgs.mkShellNoCC {
                 name = pname;
                 buildInputs = [
-                  (makePhp phpConfig)
+                  php
+                  php.packages.composer
                   pkgs.symfony-cli
                   pkgs.gh
                   pkgs.sqlite
