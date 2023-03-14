@@ -20,6 +20,7 @@
       ];
 
       imports = [
+        ./src/composer.nix
         ./src/phps.nix
       ];
 

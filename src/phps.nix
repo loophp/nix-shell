@@ -1,6 +1,8 @@
-{inputs, ...}: let
-  composer = import ./composer.nix inputs.nixpkgs;
-
+{
+  self,
+  inputs,
+  ...
+}: let
   # List from https://symfony.com/doc/current/cloud/languages/php.html#default-php-extensions
   defaultExtensions = [
     "bcmath"
@@ -43,7 +45,10 @@
     "zlib"
   ];
 
-  extensions = defaultExtensions ++ composer.getExtensionFromSection "require" ++ composer.getExtensionFromSection "require-dev";
+  extensions =
+    defaultExtensions
+    ++ self.composer.getExtensionFromSection "require"
+    ++ self.composer.getExtensionFromSection "require-dev";
 
   phpMatrix = rec
   {
@@ -101,7 +106,7 @@
     };
   };
 
-  makePhp = nixpkgs: pkgs: {
+  makePhp = pkgs: {
     php,
     extensions ? phpMatrix."${php}".extensions,
     withExtensions ? [],
@@ -153,6 +158,6 @@
 in {
   flake.api = {
     matrix = phpMatrix // {default = phpMatrix.php81;};
-    makePhp = makePhp inputs.nixpkgs;
+    makePhp = makePhp;
   };
 }
