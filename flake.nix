@@ -60,10 +60,44 @@
               )
           )
           self.api.matrix;
+
+        devShells =
+          (builtins.mapAttrs
+            (
+              name: phpConfig:
+                pkgs.mkShellNoCC {
+                  inherit name;
+
+                  buildInputs = [
+                    (makePhp phpConfig)
+                  ];
+                }
+            )
+            self.api.matrix)
+          // inputs.nixpkgs.lib.mapAttrs'
+          (
+            name: phpConfig: let
+              pname = "env-" + name;
+            in
+              pkgs.lib.nameValuePair
+              pname
+              (
+                pkgs.mkShellNoCC {
+                  name = pname;
+
+                  buildInputs = [
+                    (makePhpEnv pname (makePhp phpConfig))
+                  ];
+                }
+              )
+          )
+          self.api.matrix;
       in {
         formatter = pkgs.alejandra;
 
         packages = packages;
+
+        devShells = devShells;
       };
     };
 }
