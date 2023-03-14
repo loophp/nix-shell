@@ -30,80 +30,69 @@
         system,
         ...
       }: let
+        defaultPhpVersion = "php81";
         makePhp = self.api.makePhp pkgs;
+        envPackages = [
+          pkgs.symfony-cli
+          pkgs.gh
+          pkgs.sqlite
+          pkgs.git
+          pkgs.gnumake
+        ];
 
         packages =
-          inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig: let
+          builtins.foldl' (
+            carry: phpConfig: let
               pname = phpConfig.php;
-            in
-              pkgs.lib.nameValuePair
-              pname
-              (makePhp phpConfig)
-          )
-          self.api.matrix
-          // inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig: let
-              pname = "env-${phpConfig.php}";
+              env-pname = "env-${pname}";
               php = makePhp phpConfig;
-
             in
-              pkgs.lib.nameValuePair
-              pname
-              (pkgs.buildEnv {
-                name = pname;
-                paths = [
-                  php
-                  php.packages.composer
-                  pkgs.symfony-cli
-                  pkgs.gh
-                  pkgs.sqlite
-                  pkgs.git
-                  pkgs.gnumake
-                ];
-              })
-          )
+              carry
+              // {
+                "${pname}" = php;
+                "${env-pname}" = pkgs.buildEnv {
+                  name = pname;
+                  paths =
+                    [
+                      php
+                      php.packages.composer
+                    ]
+                    ++ envPackages;
+                };
+              }
+          ) {
+            default = packages."${defaultPhpVersion}";
+            env-default = packages."env-${defaultPhpVersion}";
+          }
           self.api.matrix;
 
         devShells =
-          inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig: let
+          builtins.foldl' (
+            carry: phpConfig: let
               pname = phpConfig.php;
-            in
-              pkgs.lib.nameValuePair
-              pname
-              (pkgs.mkShellNoCC {
-                name = pname;
-                buildInputs = [
-                  (makePhp phpConfig)
-                ];
-              })
-          )
-          self.api.matrix
-          // inputs.nixpkgs.lib.mapAttrs'
-          (
-            name: phpConfig: let
-              pname = "env-${phpConfig.php}";
+              env-pname = "env-${pname}";
               php = makePhp phpConfig;
             in
-              pkgs.lib.nameValuePair
-              pname
-              (pkgs.mkShellNoCC {
-                name = pname;
-                buildInputs = [
-                  php
-                  php.packages.composer
-                  pkgs.symfony-cli
-                  pkgs.gh
-                  pkgs.sqlite
-                  pkgs.git
-                  pkgs.gnumake
-                ];
-              })
-          )
+              carry
+              // {
+                "${pname}" = pkgs.mkShellNoCC {
+                  name = pname;
+                  buildInputs = [php];
+                };
+                "${env-pname}" = pkgs.mkShellNoCC {
+                  name = env-pname;
+                  buildInputs =
+                    [
+                      php
+                      php.packages.composer
+                    ]
+                    ++ envPackages;
+                };
+              }
+          ) {
+            default = devShells."${defaultPhpVersion}";
+            env-default = devShells."env-${defaultPhpVersion}";
+          }
           self.api.matrix;
       in {
         inherit devShells packages;
