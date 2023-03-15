@@ -31,7 +31,7 @@
         ...
       }: let
         defaultPhpVersion = "php81";
-        makePhp = self.api.makePhp pkgs;
+        makePhp = self.api.makePhp system;
         envPackages = [
           pkgs.symfony-cli
           pkgs.gh
