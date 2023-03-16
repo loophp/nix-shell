@@ -5,7 +5,7 @@
   ...
 }: let
   matrix = let
-    defaultExtensions = [
+    extensions = [
       "bcmath"
       "calendar"
       "ctype"
@@ -45,11 +45,6 @@
       "zip"
       "zlib"
     ];
-
-    extensions =
-      defaultExtensions
-      ++ self.composer.getExtensionFromSection "require"
-      ++ self.composer.getExtensionFromSection "require-dev";
   in [
     {
       extensions = extensions ++ ["json"];
@@ -111,10 +106,14 @@
       extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini",
       flags ? {},
     }: let
+      composerExtensions =
+        self.composer.getExtensionFromSection "require"
+        ++ self.composer.getExtensionFromSection "require-dev";
+
       withExtensionsFiltered =
         builtins.filter
         (x: !builtins.elem x withoutExtensions)
-        (lib.unique extensions ++ withExtensions);
+        (lib.unique extensions ++ withExtensions ++ composerExtensions);
 
       phpDrv =
         if builtins.isString php
