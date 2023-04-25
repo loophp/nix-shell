@@ -102,7 +102,6 @@
           inherit system;
           overlays = [inputs.nix-phps.overlays.default];
           config.allowUnfree = true;
-          config.allowUnfreePredicate = (pkg: true);
         };
 
         formatter = pkgs.alejandra;

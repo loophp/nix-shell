@@ -95,6 +95,7 @@
     pkgsWithNixPhps = import inputs.nixpkgs {
       overlays = [inputs.nix-phps.overlays.default];
       inherit system;
+      config.allowUnfree = true;
     };
   in
     {
