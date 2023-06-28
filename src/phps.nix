@@ -88,6 +88,10 @@
       inherit extensions;
       php = "php82";
     }
+    {
+      inherit extensions;
+      php = "php83";
+    }
   ];
 
   makePhp = system: let
