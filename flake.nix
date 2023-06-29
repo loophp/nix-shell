@@ -4,103 +4,87 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
+    mkshell-minimal.url = "github:viperML/mkshell-minimal";
+
+    # Shim to make flake.nix work with stable Nix.
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs @ {
-    self,
-    systems,
-    flake-parts,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs @ { self, flake-parts, mkshell-minimal, systems, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import systems;
 
       imports = [
+        inputs.flake-parts.flakeModules.easyOverlay
         ./src/composer.nix
         ./src/phps.nix
       ];
 
-      perSystem = {
-        config,
-        pkgs,
-        system,
-        ...
-      }: let
-        defaultPhpVersion = "php81";
-        makePhp = self.api.makePhp system;
-        envPackages = [
-          pkgs.symfony-cli
-          pkgs.gh
-          pkgs.sqlite
-          pkgs.gnumake
-        ];
+      perSystem = { config, pkgs, system, ... }:
+        let
+          phps = map
+            (php: self.api.makePhp pkgs { inherit php; })
+            (builtins.attrNames inputs.nix-phps.packages."${system}");
 
-        packages =
-          builtins.foldl' (
-            carry: phpConfig: let
-              pname = phpConfig.php;
-              env-pname = "env-${pname}";
-              php = makePhp phpConfig;
-            in
-              carry
-              // {
-                "${pname}" = php;
-                "${env-pname}" = pkgs.buildEnv {
-                  name = pname;
-                  paths =
-                    [
-                      php
-                      php.packages.composer
-                    ]
-                    ++ envPackages;
-                };
-              }
-          ) {
-            default = packages."${defaultPhpVersion}";
-            env-default = packages."env-${defaultPhpVersion}";
-          }
-          self.api.matrix;
+          envPackages = [
+            pkgs.symfony-cli
+            pkgs.gh
+            pkgs.sqlite
+            pkgs.gnumake
+          ];
 
-        devShells =
-          builtins.foldl' (
-            carry: phpConfig: let
-              pname = phpConfig.php;
-              env-pname = "env-${pname}";
-              php = makePhp phpConfig;
-            in
-              carry
-              // {
-                "${pname}" = pkgs.mkShellNoCC {
-                  name = pname;
-                  buildInputs = [php];
-                };
-                "${env-pname}" = pkgs.mkShellNoCC {
-                  name = env-pname;
-                  buildInputs =
-                    [
-                      php
-                      php.packages.composer
-                    ]
-                    ++ envPackages;
-                };
-              }
-          ) {
-            default = devShells."${defaultPhpVersion}";
-            env-default = devShells."env-${defaultPhpVersion}";
-          }
-          self.api.matrix;
-      in {
-        inherit devShells packages;
+          packages = builtins.foldl'
+            (
+              carry: php:
+                let
+                  name = "php${pkgs.lib.versions.major php.version}${pkgs.lib.versions.minor php.version}";
+                in
+                {
+                  "${name}" = php;
+                  "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ php php.packages.composer ] ++ envPackages; };
+                } // carry
+            )
+            {
+              "default" = self.packages."${system}".env-php81;
+              "env-default" = self.packages."${system}".env-php81;
+            }
+            phps;
 
-        # TODO: Find a better way to do this.
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          overlays = [inputs.nix-phps.overlays.default];
-          config.allowUnfree = true;
+          devShells = builtins.foldl'
+            (
+              carry: php:
+                let
+                  name = "php${pkgs.lib.versions.major php.version}${pkgs.lib.versions.minor php.version}";
+                in
+                {
+                  "${name}" = mkshell-minimal pkgs { name = "${name}"; packages = [ php php.packages.composer ]; };
+                  "env-${name}" = mkshell-minimal pkgs { name = "env-${name}"; packages = [ php php.packages.composer ] ++ envPackages; };
+                } // carry
+            )
+            {
+              "default" = self.devShells."${system}".env-php81;
+              "env-default" = self.devShells."${system}".env-php81;
+            }
+            phps;
+        in
+        {
+          _module.args.pkgs = import self.inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              inputs.nix-phps.overlays.default
+            ];
+            config.allowUnfree = true;
+          };
+
+          formatter = pkgs.nixpkgs-fmt;
+
+          overlayAttrs = packages;
+
+          inherit packages devShells;
         };
-
-        formatter = pkgs.alejandra;
-      };
     };
 }

@@ -1,132 +1,22 @@
-{
-  self,
-  inputs,
-  lib,
-  ...
-}: let
-  matrix = let
-    extensions = [
-      "bcmath"
-      "calendar"
-      "ctype"
-      "curl"
-      "dom"
-      "exif"
-      "fileinfo"
-      "filter"
-      "ftp"
-      "gd"
-      "gettext"
-      "gmp"
-      "iconv"
-      "imap"
-      "intl"
-      "mbstring"
-      "mysqli"
-      "mysqlnd"
-      "opcache"
-      "openssl"
-      "pdo"
-      "pdo_mysql"
-      "pdo_odbc"
-      "pdo_pgsql"
-      "pdo_sqlite"
-      "pgsql"
-      "posix"
-      "readline"
-      "session"
-      "simplexml"
-      "sockets"
-      "soap"
-      "sodium"
-      "sqlite3"
-      "sysvsem"
-      "tokenizer"
-      "xmlreader"
-      "xmlwriter"
-      "zip"
-      "zlib"
-    ];
-  in [
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = ["sodium" "pcov"];
-      php = "php56";
-    }
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = ["sodium"];
-      php = "php70";
-    }
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = ["sodium"];
-      php = "php71";
-    }
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = [];
-      php = "php72";
-    }
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = [];
-      php = "php73";
-    }
-    {
-      extensions = extensions ++ ["json"];
-      withoutExtensions = [];
-      php = "php74";
-    }
-    {
-      inherit extensions;
-      php = "php80";
-    }
-    {
-      inherit extensions;
-      php = "php81";
-    }
-    {
-      inherit extensions;
-      php = "php82";
-    }
-    {
-      inherit extensions;
-      php = "php83";
-    }
-  ];
-
-  makePhp = system: let
-    # See if we can do this in a better way.
-    pkgsWithNixPhps = import inputs.nixpkgs {
-      overlays = [inputs.nix-phps.overlays.default];
-      inherit system;
-      config.allowUnfree = true;
-    };
-  in
-    {
-      php,
-      extensions ? [],
-      withExtensions ? [],
-      withoutExtensions ? [],
-      extraConfig ? "",
-      extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini",
-      flags ? {},
-    }: let
-      composerExtensions =
-        self.composer.getExtensionFromSection "require"
-        ++ self.composer.getExtensionFromSection "require-dev";
-
-      withExtensionsFiltered =
-        builtins.filter
-        (x: !builtins.elem x withoutExtensions)
-        (lib.unique extensions ++ withExtensions ++ composerExtensions);
-
-      phpDrv =
-        if builtins.isString php
-        then pkgsWithNixPhps."${php}"
-        else php;
-    in ((phpDrv.override flags).buildEnv {
+{ self
+, lib
+, ...
+}:
+let
+  makePhp = pkgs:
+    { php
+    , extensions ? [ ]
+    , withExtensions ? [ ]
+    , withoutExtensions ? [ ]
+    , extraConfig ? ""
+    , extraConfigFile ? "${builtins.getEnv "PWD"}/.user.ini"
+    , flags ? { }
+    }:
+    let
+      # Normalize the php parameter(string or drv) into a derivation.
+      phpDrv = if builtins.isString php then pkgs."${php}" else php;
+    in
+    ((phpDrv.override flags).buildEnv {
       extraConfig =
         extraConfig
         + "\n"
@@ -136,30 +26,67 @@
           else ""
         );
 
-      extensions = {all, ...}: (
-        # We remove "null" extensions (like json for php >= 8)
-        # See: https://github.com/fossar/nix-phps/pull/122
-        builtins.filter
-        (ext: ext != null)
-        (
-          map
-          (ext:
-            if builtins.isString ext
-            then all."${ext}"
-            else ext)
-          (
-            builtins.filter
-            (ext:
-              if builtins.isString ext
-              then all ? "${ext}"
-              else ext)
-            withExtensionsFiltered
-          )
-        )
-      );
+      extensions = extensions@{ all, enabled, ... }:
+        let
+          buildExtensions =
+            { all
+            , enabled
+            , withExtensions
+            , withoutExtensions
+            , composerExtensions ? [ ]
+            }:
+            let
+              filterStringExtensions = extList:
+                builtins.filter
+                  (ext: (builtins.isString ext) && (lib.warnIf (!(all ? "${ext}")) "The ${ext} extension does not exist, ignoring." (all ? "${ext}")))
+                  extList;
+
+              filterDrvExtensions = extList:
+                builtins.filter
+                  (ext: (!builtins.isString ext) && (all ? el))
+                  extList;
+
+              # Filter only extensions provided as string
+              userExtensionAsStringToAdd = filterStringExtensions (withExtensions ++ composerExtensions);
+              userExtensionsAsStringToRemove = filterStringExtensions (withoutExtensions);
+
+              # Display a warning when trying to build an extension that is already enabled or does not build
+              e0 = builtins.map
+                (ext: lib.warnIf ((builtins.tryEval all."${ext}".outPath).success == false) "The ${ext} extension is enabled in PHP ${phpDrv.version} but failed to instantiate, ignoring." ext)
+                userExtensionAsStringToAdd;
+
+              # Remove extensions that does not build
+              e1 = builtins.filter
+                (ext: (builtins.tryEval all."${ext}".outPath).success)
+                e0;
+
+              # Consolidate the list of extensions as derivations
+              e2 = enabled ++ (builtins.map (ext: all."${ext}") e1) ++ (filterDrvExtensions withExtensions);
+
+              # Remove unwanted extensions provided as strings
+              e3 = builtins.filter
+                (ext:
+                  !((builtins.elem (ext.pname) (builtins.map (e: "php-${e}") userExtensionsAsStringToRemove)) ||
+                    (builtins.elem (ext.pname) userExtensionsAsStringToRemove))
+                )
+                e2;
+
+              # Remove unwanted extensions provided as derivations
+              e4 = builtins.filter
+                (ext: !builtins.elem ext (filterDrvExtensions withoutExtensions))
+                e3;
+            in
+            e4;
+        in
+        (buildExtensions {
+          inherit (extensions) all enabled;
+          inherit withExtensions withoutExtensions;
+          composerExtensions = self.composer.getExtensionFromSection "require" ++ self.composer.getExtensionFromSection "require-dev";
+        });
     });
-in {
+in
+{
   flake.api = {
-    inherit makePhp matrix;
+    inherit makePhp;
   };
 }
