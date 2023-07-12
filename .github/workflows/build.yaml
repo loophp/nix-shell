@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - 'master'
+      - "master"
     paths:
       - "**.nix"
       - ".github/workflows/*.yml"
@@ -32,7 +32,7 @@ jobs:
           )" >> $GITHUB_OUTPUT
 
   build:
-    name: '${{ matrix.packages }} on ${{ matrix.operating-system }}'
+    name: "${{ matrix.packages }} on ${{ matrix.operating-system }}"
     needs: [determine-matrix]
     runs-on: ${{ matrix.operating-system }}
     strategy:
@@ -55,7 +55,7 @@ jobs:
         with:
           name: nix-shell
           # If you chose API tokens for write access OR if you have a private cache
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           extraPullNames: fossar
 
       - name: Build ${{ matrix.packages }} binary

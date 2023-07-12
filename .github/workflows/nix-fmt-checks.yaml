@@ -3,8 +3,8 @@ name: Nix formatter checks
 on:
   pull_request:
   push:
-      paths:
-          - "**.nix"
+    paths:
+      - "**.nix"
 
 jobs:
   lockfile:

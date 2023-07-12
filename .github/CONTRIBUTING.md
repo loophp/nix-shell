@@ -1,9 +1,9 @@
 # CONTRIBUTING
 
 We're using [GitHub Actions](https://docs.github.com/en/actions) as a continuous integration system.
- 
-For details, see the workflows in [.github/workflows](../.github/workflows). 
- 
+
+For details, see the workflows in [.github/workflows](../.github/workflows).
+
 ## Tests
 
 We're using [`grumphp/grumphp`](https://github.com/phpro/grumphp) to drive the development.
