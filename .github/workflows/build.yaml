@@ -32,14 +32,18 @@ jobs:
           )" >> $GITHUB_OUTPUT
 
   build:
-    name: "${{ matrix.packages }} on ${{ matrix.operating-system }}"
+    name: "${{ matrix.packages }} on ${{ matrix.archs.arch }}"
     needs: [determine-matrix]
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.archs.os }}
     strategy:
       fail-fast: false
       matrix:
         packages: ${{fromJson(needs.determine-matrix.outputs.matrix)}}
-        operating-system: [ubuntu-latest, macOS-latest]
+        archs:
+          [
+            { os: ubuntu-latest, arch: x86_64-linux },
+            { os: macOS-latest, arch: x86_64-darwin },
+          ]
 
     steps:
       - name: Set up Git repository
