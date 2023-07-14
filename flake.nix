@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
     systems.url = "github:nix-systems/default";
-    };
+  };
 
   outputs = inputs @ {
     self,
