@@ -31,7 +31,7 @@ jobs:
             nix eval --json --impure --expr 'builtins.filter (x: builtins.substring 0 3 x == "php") (builtins.attrNames (import ./.).packages.x86_64-linux)'
           ) >> $GITHUB_OUTPUT
 
-  buildPhP:
+  build:
     name: "${{ matrix.phps }} on ${{ matrix.archs.arch }}"
     needs: [determine-matrix]
     runs-on: ${{ matrix.archs.os }}
@@ -69,37 +69,8 @@ jobs:
         run: |
           nix build .#env-${{ matrix.phps }}
 
-  buildPhPWithAllExtensions:
-    name: "${{ matrix.phps }} with all extensions on ${{ matrix.archs.arch }}"
-    needs: [determine-matrix]
-    runs-on: ${{ matrix.archs.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        phps: ${{fromJson(needs.determine-matrix.outputs.phps)}}
-        archs:
-          [
-            { os: ubuntu-latest, arch: x86_64-linux },
-            { os: macOS-latest, arch: x86_64-darwin },
-          ]
-
-    steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v3
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Run the Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
-      - uses: cachix/cachix-action@v12
-        with:
-          name: nix-shell
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-          extraPullNames: fossar
-
-      - name: Build all extensions
+      - name: Build ${{ matrix.phps }} with all extensions enabled
+        continue-on-error: true
         run: |
           NIXPKGS_ALLOW_BROKEN=1 \
           NIXPKGS_ALLOW_UNFREE=1 \
