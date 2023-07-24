@@ -70,6 +70,14 @@ jobs:
         run: |
           nix build .#env-${{ matrix.packages }}
 
+      - name: Build imap extension
+        run: |
+          nix build .#${{ matrix.packages }}.extensions.imap
+
+      - name: Build ftp extension
+        run: |
+          nix build .#${{ matrix.packages }}.extensions.ftp
+
       - name: Build XDebug extension
         continue-on-error: true
         run: |
