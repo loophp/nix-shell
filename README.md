@@ -90,13 +90,13 @@ Available PHP versions and environments are:
 - `php80`, `env-php80`
 - `php81`, `env-php81`
 - `php82`, `env-php82`
+- `php83`, `env-php83`
 
 This package also provide development environments with some tools:
 
 - [Symfony cli](https://github.com/symfony-cli/symfony-cli)
 - [Github cli](https://cli.github.com/)
 - [sqlite](https://www.sqlite.org/)
-- [git](https://git-scm.com/)
 - [gnumake](https://www.gnu.org/software/make/)
 
 In order to use them, use the prefix `env-`:

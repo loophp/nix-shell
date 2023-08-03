@@ -33,7 +33,6 @@
           pkgs.symfony-cli
           pkgs.gh
           pkgs.sqlite
-          pkgs.git
           pkgs.gnumake
         ];
 
