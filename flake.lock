@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "flake-compat_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673956053,
+        "narHash": "sha256-4gtG9iQuiKITOjNQQeQIpoIB6b16fm+504Ch3sNKLd8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "35bb57c0c8d8b62bbfd284272c928ceb64ddbde9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -33,9 +49,24 @@
         "type": "indirect"
       }
     },
+    "mkshell-minimal": {
+      "locked": {
+        "lastModified": 1686553787,
+        "narHash": "sha256-QJesHidOaI00yHjzWeGXdKKCd9qPc7+H2pZJoBuSW8c=",
+        "owner": "viperML",
+        "repo": "mkshell-minimal",
+        "rev": "8cdb29df3081141280a33faddaac3e8bf2c1b15a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "viperML",
+        "repo": "mkshell-minimal",
+        "type": "github"
+      }
+    },
     "nix-phps": {
       "inputs": {
-        "flake-compat": "flake-compat",
+        "flake-compat": "flake-compat_2",
         "nixpkgs": "nixpkgs",
         "utils": "utils"
       },
@@ -105,7 +136,9 @@
     },
     "root": {
       "inputs": {
+        "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
+        "mkshell-minimal": "mkshell-minimal",
         "nix-phps": "nix-phps",
         "nixpkgs": "nixpkgs_2",
         "systems": "systems_2"

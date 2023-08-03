@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      phps: ${{ steps.set-phps.outputs.phps }}
 
     steps:
       - name: Set up Git repository
@@ -24,21 +24,21 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Build PHP versions matrix
-        id: set-matrix
+      - name: Build PHP matrix
+        id: set-phps
         run: |
-          echo "matrix=$(
+          echo phps=$(
             nix eval --json --impure --expr 'builtins.filter (x: builtins.substring 0 3 x == "php") (builtins.attrNames (import ./.).packages.x86_64-linux)'
-          )" >> $GITHUB_OUTPUT
+          ) >> $GITHUB_OUTPUT
 
   build:
-    name: "${{ matrix.packages }} on ${{ matrix.archs.arch }}"
+    name: "${{ matrix.phps }} on ${{ matrix.archs.arch }}"
     needs: [determine-matrix]
     runs-on: ${{ matrix.archs.os }}
     strategy:
       fail-fast: false
       matrix:
-        packages: ${{fromJson(needs.determine-matrix.outputs.matrix)}}
+        phps: ${{fromJson(needs.determine-matrix.outputs.phps)}}
         archs:
           [
             { os: ubuntu-latest, arch: x86_64-linux },
@@ -58,37 +58,21 @@ jobs:
       - uses: cachix/cachix-action@v12
         with:
           name: nix-shell
-          # If you chose API tokens for write access OR if you have a private cache
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           extraPullNames: fossar
 
-      - name: Build ${{ matrix.packages }} binary
+      - name: Build ${{ matrix.phps }} binary
         run: |
-          nix build .#${{ matrix.packages }}
+          nix build .#${{ matrix.phps }}
 
-      - name: Build ${{ matrix.packages }} environment
+      - name: Build ${{ matrix.phps }} environment
         run: |
-          nix build .#env-${{ matrix.packages }}
+          nix build .#env-${{ matrix.phps }}
 
-      - name: Build imap extension
-        run: |
-          nix build .#${{ matrix.packages }}.extensions.imap
-
-      - name: Build ftp extension
-        run: |
-          nix build .#${{ matrix.packages }}.extensions.ftp
-
-      - name: Build XDebug extension
+      - name: Build ${{ matrix.phps }} with all extensions enabled
         continue-on-error: true
         run: |
-          nix build .#${{ matrix.packages }}.extensions.xdebug
-
-      - name: Build pcov extension
-        continue-on-error: true
-        run: |
-          nix build .#${{ matrix.packages }}.extensions.pcov
-
-      - name: Build oci8 extension
-        continue-on-error: true
-        run: |
-          nix build .#${{ matrix.packages }}.extensions.oci8
+          NIXPKGS_ALLOW_BROKEN=1 \
+          NIXPKGS_ALLOW_UNFREE=1 \
+          NIXPKGS_ALLOW_INSECURE=1 \
+          nix build --impure --expr 'let pkgs = (import ./.).outputs.packages.${builtins.currentSystem}; php = pkgs.${{ matrix.phps }}; allExtensions = (builtins.attrNames php.extensions);  in (import ./.).api.makePhp pkgs {php = "${{ matrix.phps }}"; withExtensions = allExtensions;}'
