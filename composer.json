@@ -1,0 +1,7 @@
+{
+    "require": {
+        "ext-pcov": "*",
+        "ext-foobar": "*",
+        "ext-tokenizer": "*"
+    }
+}
