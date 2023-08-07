@@ -15,12 +15,11 @@ Each available environment provides the following tools:
 
 - Custom `php.ini` loading,
 - Composer,
-- Git,
 - Github CLi,
 - Symfony CLi,
 - GNU Make.
 
-Available PHP versions from `5.6` to `8.2`.
+Available PHP versions from `5.6` to `8.3`.
 
 The PHP extensions to use are automatically inferred from the `composer.json`
 file.
