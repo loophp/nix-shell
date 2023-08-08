@@ -22,11 +22,11 @@
       inputs.flake-parts.flakeModules.easyOverlay
     ];
 
-    perSystem = { config, pkgs, system, ... }:
+    perSystem = { self', inputs', config, pkgs, system, ... }:
       let
         phps = map
           (php: pkgs.api.buildPhpFromComposer { inherit php; src = inputs.self; })
-          (builtins.attrNames inputs.nix-phps.packages."${system}");
+          (builtins.attrNames inputs'.nix-phps.packages);
 
         envPackages = [
           pkgs.symfony-cli
@@ -47,8 +47,8 @@
               } // carry
           )
           {
-            "default" = self.packages."${system}".env-php81;
-            "env-default" = self.packages."${system}".env-php81;
+            "default" = self'.packages.env-php81;
+            "env-default" = self'.packages.env-php81;
           }
           phps;
 
@@ -64,8 +64,8 @@
               } // carry
           )
           {
-            "default" = self.devShells."${system}".env-php81;
-            "env-default" = self.devShells."${system}".env-php81;
+            "default" = self'.devShells.env-php81;
+            "env-default" = self'.devShells.env-php81;
           }
           phps;
       in
