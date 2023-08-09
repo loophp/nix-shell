@@ -106,10 +106,6 @@ nix shell github:loophp/nix-shell#env-php81
 
 ### In another flake
 
-<details>
-
-<summary>Step 1</summary>
-
 Import the input:
 
 ```nix
@@ -120,41 +116,70 @@ Import the input:
   };
 ```
 
-</details>
-
-<details>
-
-<summary>Step 2</summary>
-
-Import the overlay:
+Then each PHP environment will be available at
 
 ```nix
-pkgs = import inputs.nixpkgs {
-    inherit system;
-    overlays = [
-        inputs.phps.overlays.default
-    ];
-};
+    # PHP 8.1
+    phps.packages.${system}.php81
 ```
 
-</details>
-
-<details>
-
-<summary>Step 3</summary>
-
-Use the packages:
+or
 
 ```nix
     # PHP 8.1 environment
-    pkgs.env-php81
+    phps.packages.${system}.env-php81
 ```
 
-</details>
+You may also use the API to build your own custom version of PHP in your own
+flake:
 
-The old function `makePhp` has been removed in August 2023. To create your own
-version of PHP, use the new function `buildPhpFromComposer` function available
-in the project [`loophp/nix-php-composer-builder`](https://github.com/loophp/nix-php-composer-builder/)
+```nix
+{
+  description = "A very basic flake";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    nix-shell.url = "github:loophp/nix-shell";
+  };
+
+  outputs = { self, nixpkgs, flake-utils, nix-shell }:
+    flake-utils.lib.eachDefaultSystem
+      (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+
+          php = (nix-shell.api.makePhp system {
+            php = "php81";
+            withExtensions = [ "pcov" "xdebug" ];
+            withoutExtensions = [ "sodium" ];
+            extraConfig = ''
+              memory_limit=-1
+            '';
+            flags = {
+              apxs2Support = false;
+              ztsSupport = false;
+            };
+          });
+        in
+        {
+          devShells = {
+            default = pkgs.mkShellNoCC {
+              name = "PHP project";
+
+              buildInputs = [
+                php
+                php.packages.composer
+                pkgs.mailhog
+              ];
+            };
+          };
+        }
+      );
+}
+```
 
 ### With direnv
 
