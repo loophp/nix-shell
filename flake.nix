@@ -59,7 +59,7 @@
               in
               {
                 "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ php php.packages.composer ]; };
-                "env-${name}" = pkgs.mkShellNoCC { name = "env-${name}"; buildInputs = [ php php.packages.composer ] ++ envPackages; };
+                "env-${name}" = self'.packages."${name}".overrideAttrs (oldAttrs: { buildInputs = oldAttrs.buildInputs ++ envPackages;});
               } // carry
           )
           {
