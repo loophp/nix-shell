@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
-    mkshell-minimal.url = "github:viperML/mkshell-minimal";
     nix-php-composer-builder.url = "github:loophp/nix-php-composer-builder";
 
     # Shim to make flake.nix work with stable Nix.
@@ -15,7 +14,7 @@
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs @ { self, flake-parts, mkshell-minimal, systems, ... }: flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ { self, flake-parts, systems, ... }: flake-parts.lib.mkFlake { inherit inputs; } {
     systems = import systems;
 
     imports = [
@@ -59,8 +58,8 @@
                 name = "php${pkgs.lib.versions.major php.version}${pkgs.lib.versions.minor php.version}";
               in
               {
-                "${name}" = mkshell-minimal pkgs { name = "${name}"; packages = [ php php.packages.composer ]; };
-                "env-${name}" = mkshell-minimal pkgs { name = "env-${name}"; packages = [ php php.packages.composer ] ++ envPackages; };
+                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ php php.packages.composer ]; };
+                "env-${name}" = pkgs.mkShellNoCC { name = "env-${name}"; buildInputs = [ php php.packages.composer ] ++ envPackages; };
               } // carry
           )
           {

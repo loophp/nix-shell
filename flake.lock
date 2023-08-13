@@ -66,31 +66,16 @@
         "type": "indirect"
       }
     },
-    "mkshell-minimal": {
-      "locked": {
-        "lastModified": 1686553787,
-        "narHash": "sha256-QJesHidOaI00yHjzWeGXdKKCd9qPc7+H2pZJoBuSW8c=",
-        "owner": "viperML",
-        "repo": "mkshell-minimal",
-        "rev": "8cdb29df3081141280a33faddaac3e8bf2c1b15a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "viperML",
-        "repo": "mkshell-minimal",
-        "type": "github"
-      }
-    },
     "nix-php-composer-builder": {
       "inputs": {
         "flake-parts": "flake-parts_2"
       },
       "locked": {
-        "lastModified": 1691583775,
-        "narHash": "sha256-K1+5ALmeISK9T1yhHCFTaHoYpZAAsFNz8mgbSgG1MB4=",
+        "lastModified": 1691612804,
+        "narHash": "sha256-8VvOtUulOKRamcA35FHOEf3nDnxjy23krebTD1cgXJE=",
         "owner": "loophp",
         "repo": "nix-php-composer-builder",
-        "rev": "8d4382bd4149502fbf4605cb6f43c1017cb6156a",
+        "rev": "5e0303af96ed3ce1bd5fee578e861ed298fc85ee",
         "type": "github"
       },
       "original": {
@@ -106,11 +91,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1691303907,
-        "narHash": "sha256-+ve4zOL7AaAR/eOOxcKnGWayGXm46mHnHJzMEnBL8s8=",
+        "lastModified": 1691940224,
+        "narHash": "sha256-UrfS8kfwtiu417Ce3+JPdslgP08Ti1ZDDH3N7EkkEok=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "5d9c6911fa10b5dcc8b064db92073b20398514db",
+        "rev": "7a076ab3124664fae62e17fadf2f982b6713f995",
         "type": "github"
       },
       "original": {
@@ -121,11 +106,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1691218994,
-        "narHash": "sha256-46GJ5vLf9H+Oh7Jii2gJI9GATJHGbx2iQpon5nUSFPI=",
+        "lastModified": 1691853136,
+        "narHash": "sha256-wTzDsRV4HN8A2Sl0SVQY0q8ILs90CD43Ha//7gNZE+E=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0d2fb29f5071a12d7983319c2c2576be6a130582",
+        "rev": "f0451844bbdf545f696f029d1448de4906c7f753",
         "type": "github"
       },
       "original": {
@@ -173,11 +158,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1691371061,
-        "narHash": "sha256-BxPbPVlBIoneaXIBiHd0LVzA+L4nmvFCNBU6TmQAiMM=",
+        "lastModified": 1691853136,
+        "narHash": "sha256-wTzDsRV4HN8A2Sl0SVQY0q8ILs90CD43Ha//7gNZE+E=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5068bc8fe943bde3c446326da8d0ca9c93d5a682",
+        "rev": "f0451844bbdf545f696f029d1448de4906c7f753",
         "type": "github"
       },
       "original": {
@@ -191,7 +176,6 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
-        "mkshell-minimal": "mkshell-minimal",
         "nix-php-composer-builder": "nix-php-composer-builder",
         "nix-phps": "nix-phps",
         "nixpkgs": "nixpkgs_2",
