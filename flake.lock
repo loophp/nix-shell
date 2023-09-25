@@ -71,11 +71,11 @@
         "flake-parts": "flake-parts_2"
       },
       "locked": {
-        "lastModified": 1694881163,
-        "narHash": "sha256-m2OdSfEh1qHYiKpZhp2httFDVaduro3N5IRC1qLKtSw=",
+        "lastModified": 1695290447,
+        "narHash": "sha256-Dq47j/rs6LLNlIRIDfdQ1rXyicVrSsnxc8tYCNM25vw=",
         "owner": "loophp",
         "repo": "nix-php-composer-builder",
-        "rev": "c14a608fa6c95f46868c5722cc2e331208fd9eaa",
+        "rev": "04372eb84e990ee65167af9adb679fdad99d38af",
         "type": "github"
       },
       "original": {
@@ -158,11 +158,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1694948089,
-        "narHash": "sha256-d2B282GmQ9o8klc22/Rbbbj6r99EnELQpOQjWMyv0rU=",
+        "lastModified": 1695318763,
+        "narHash": "sha256-FHVPDRP2AfvsxAdc+AsgFJevMz5VBmnZglFUMlxBkcY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5148520bfab61f99fd25fb9ff7bfbb50dad3c9db",
+        "rev": "e12483116b3b51a185a33a272bf351e357ba9a99",
         "type": "github"
       },
       "original": {
