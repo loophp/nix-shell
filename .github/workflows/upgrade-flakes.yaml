@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 0 * * 1"
 
+env:
+  LOOPHP_BOT_TOKEN: ${{ secrets.LOOPHP_BOT_TOKEN }}
+
 jobs:
   createPullRequest:
     uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
