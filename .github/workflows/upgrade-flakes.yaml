@@ -4,9 +4,14 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 1"
+  workflow_call:
+    secrets:
+      LOOPHP_BOT_TOKEN:
+        description: 'A token passed from the caller workflow to trigger tests on the pull request.'
+        required: true
 
 jobs:
   createPullRequest:
     uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
     with:
-      token: ${{ secrets.LOOPHP_BOT_TOKEN }}
+      token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
