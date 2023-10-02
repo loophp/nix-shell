@@ -8,5 +8,5 @@ on:
 jobs:
   createPullRequest:
     uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
-    with:
+    secrets:
       token: "${{ secrets.token }}"
