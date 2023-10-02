@@ -4,6 +4,9 @@ on:
   workflow_run:
     types:
       - "completed"
+    workflows:
+      - "Update flake lock file"
+      - "Builds"
 
 jobs:
   merge:
