@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: "Request review from @loophp-bot"
-        uses: "actions/github-script@v5"
+        uses: "actions/github-script@v6"
         with:
           github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
           script: |
@@ -37,7 +37,7 @@ jobs:
             })
 
       - name: "Assign @loophp-bot"
-        uses: "actions/github-script@v5"
+        uses: "actions/github-script@v6"
         with:
           github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
           script: |
@@ -56,7 +56,7 @@ jobs:
             })
 
       - name: "Approve pull request"
-        uses: "actions/github-script@v5"
+        uses: "actions/github-script@v6"
         with:
           github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
           script: |
@@ -71,7 +71,7 @@ jobs:
             })
 
       - name: "Merge pull request"
-        uses: "actions/github-script@v5"
+        uses: "actions/github-script@v6"
         with:
           github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
           script: |
