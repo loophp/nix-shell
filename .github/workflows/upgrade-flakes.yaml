@@ -2,11 +2,11 @@ name: "Update flake lock file"
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 jobs:
   createPullRequest:
     uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
     secrets:
-      token: "${{ secrets.BOT_TOKEN }}"
+      token: "${{ secrets.GH_TOKEN }}"
