@@ -2,7 +2,7 @@ name: "Update flake lock file"
 
 on:
   schedule:
-    - cron: "5 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
