@@ -5,12 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
     nix-php-composer-builder.url = "github:loophp/nix-php-composer-builder";
-
     # Shim to make flake.nix work with stable Nix.
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
+    flake-compat.url = "github:nix-community/flake-compat";
     systems.url = "github:nix-systems/default";
   };
 

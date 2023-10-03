@@ -15,8 +15,7 @@ jobs:
 
     if: >
       github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'success' &&
-      (github.actor == 'dependabot[bot]' || github.actor == 'github-actions[bot]')
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: "Request review from @loophp-bot"
