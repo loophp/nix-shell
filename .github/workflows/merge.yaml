@@ -5,7 +5,6 @@ on:
     types:
       - "completed"
     workflows:
-      - "Update flake lock file"
       - "Builds"
 
 jobs:
@@ -16,14 +15,13 @@ jobs:
 
     if: >
       github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'success' &&
-      (github.actor == 'dependabot[bot]' || github.actor == 'github-actions[bot]')
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: "Request review from @loophp-bot"
         uses: "actions/github-script@v6"
         with:
-          github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
+          github-token: "${{ secrets.BOT_TOKEN }}"
           script: |
             const pullRequest = context.payload.workflow_run.pull_requests[0]
             const repository = context.repo
@@ -42,7 +40,7 @@ jobs:
       - name: "Assign @loophp-bot"
         uses: "actions/github-script@v6"
         with:
-          github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
+          github-token: "${{ secrets.BOT_TOKEN }}"
           script: |
             const pullRequest = context.payload.workflow_run.pull_requests[0]
             const repository = context.repo
@@ -61,7 +59,7 @@ jobs:
       - name: "Approve pull request"
         uses: "actions/github-script@v6"
         with:
-          github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
+          github-token: "${{ secrets.BOT_TOKEN }}"
           script: |
             const pullRequest = context.payload.workflow_run.pull_requests[0]
             const repository = context.repo
@@ -76,7 +74,7 @@ jobs:
       - name: "Merge pull request"
         uses: "actions/github-script@v6"
         with:
-          github-token: "${{ secrets.LOOPHP_BOT_TOKEN }}"
+          github-token: "${{ secrets.BOT_TOKEN }}"
           script: |
             const pullRequest = context.payload.workflow_run.pull_requests[0]
             const repository = context.repo
