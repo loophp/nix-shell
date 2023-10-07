@@ -13,13 +13,23 @@ which can be installed on (_almost_) any operating system.
 
 Each available environment provides the following tools:
 
-- Custom `php.ini` loading,
 - Composer,
-- Github CLi,
 - Symfony CLi,
-- GNU Make.
+- SQLite
 
-Available PHP versions from `5.6` to `8.3`.
+Available stable PHP versions from `5.6` to `8.3`. But also weekly builds from
+the following branches:
+
+- `PHP-8.1`
+- `PHP-8.2`
+- `PHP-8.3`
+- `master` (*future 8.4*)
+
+To list the available PHP versions, run:
+
+```shell
+nix flake show github:loophp/nix-shell
+```
 
 The PHP extensions to use are automatically inferred from the `composer.json`
 file.
@@ -52,6 +62,13 @@ building those PHP packages yourself.
 
 ```shell
 cachix use nix-shell
+cachix use php-src-nix
+```
+
+This project also provide a basic template for PHP projects, to use it, run:
+
+```shell
+nix flake init --template github:loophp/nix-shell#basic
 ```
 
 ## Usage
@@ -78,31 +95,11 @@ nix shell github:loophp/nix-shell#env-php81
 Since the 14th of November 2022, PHP is in `NTS` mode by default (see
 [#154774](https://github.com/NixOS/nixpkgs/issues/154774)).
 
-Available PHP versions and environments are:
+To list the available PHP versions and environments, run:
 
-- `php56`, `env-php56`
-- `php70`, `env-php70`
-- `php71`, `env-php71`
-- `php72`, `env-php72`
-- `php73`, `env-php73`
-- `php74`, `env-php74`
-- `php80`, `env-php80`
-- `php81`, `env-php81`
-- `php82`, `env-php82`
-- `php83`, `env-php83`
-
-This package also provide development environments with some tools:
-
-- [Symfony cli](https://github.com/symfony-cli/symfony-cli)
-- [Github cli](https://cli.github.com/)
-- [sqlite](https://www.sqlite.org/)
-- [gnumake](https://www.gnu.org/software/make/)
-
-In order to use them, use the prefix `env-`:
-
-```shell
-nix shell github:loophp/nix-shell#env-php81
-```
+  ```shell
+  nix flake show github:loophp/nix-shell
+  ```
 
 ### In another flake
 
@@ -152,9 +149,8 @@ Use the packages:
 
 </details>
 
-The old function `makePhp` has been removed in August 2023. To create your own
-version of PHP, use the new function `buildPhpFromComposer` function available
-in the project [`loophp/nix-php-composer-builder`](https://github.com/loophp/nix-php-composer-builder/)
+To create your own version of PHP, use the API function `buildPhpFromComposer`
+function available.
 
 ### With direnv
 
@@ -166,7 +162,7 @@ development environment just by changing directory.
 Edit the file `.envrc` and add the line:
 
 ```
-use flake github:loophp/nix-shell#env-php81 --impure
+use flake github:loophp/nix-shell#env-php-master-snapshot --impure
 ```
 
 And it's done !
@@ -180,9 +176,8 @@ nix shell github:loophp/nix-shell#php81
 php -c /path/to/the/config.ini <<command>>
 ```
 
-[Another option][doc .user.ini] would be to create a `.user.ini` file within your
-current working directory before running the PHP environment,
-as such:
+[Another option][doc .user.ini] would be to create a `.user.ini` file within
+your current working directory before running the PHP environment, as such:
 
 ```ini
 max_execution_time = 0
@@ -192,7 +187,7 @@ memory_limit = 2048M
 Then run:
 
 ```shell
-nix shell github:loophp/nix-shell#php81 --impure
+nix shell github:loophp/nix-shell#php82 --impure
 ```
 
 The `--impure` flag is important to make sure that your custom

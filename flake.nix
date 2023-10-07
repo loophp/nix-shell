@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
-    nix-php-composer-builder.url = "github:loophp/nix-php-composer-builder";
+    php-src-nix.url = "github:loophp/php-src-nix";
     # Shim to make flake.nix work with stable Nix.
     flake-compat.url = "github:nix-community/flake-compat";
     systems.url = "github:nix-systems/default";
@@ -13,33 +13,36 @@
   outputs = inputs @ { self, flake-parts, systems, ... }: flake-parts.lib.mkFlake { inherit inputs; } {
     systems = import systems;
 
-    imports = [
-      inputs.flake-parts.flakeModules.easyOverlay
-    ];
+    flake = {
+      templates = {
+        basic = {
+          path = ./templates/basic;
+          description = "A basic template for getting started with PHP development";
+          welcomeText = builtins.readFile ./templates/basic/README.md;
+        };
+      };
 
-    perSystem = { self', inputs', config, pkgs, system, ... }:
+      overlays.default = import ./src/overlay inputs;
+    };
+
+    perSystem = { self', inputs', config, pkgs, system, lib, ... }:
       let
-        phps = map
-          (php: pkgs.api.buildPhpFromComposer { inherit php; src = inputs.self; })
-          (builtins.attrNames inputs'.nix-phps.packages);
+        phps =
+          (inputs.php-src-nix.overlays.snapshot pkgs pkgs) //
+          (inputs.nix-phps.overlays.default pkgs pkgs);
 
         envPackages = [
           pkgs.symfony-cli
-          pkgs.gh
           pkgs.sqlite
-          pkgs.gnumake
         ];
 
-        packages = builtins.foldl'
+        packages = lib.foldlAttrs
           (
-            carry: php:
-              let
-                name = "php${pkgs.lib.versions.major php.version}${pkgs.lib.versions.minor php.version}";
-              in
-              {
-                "${name}" = php;
-                "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ php php.packages.composer ] ++ envPackages; };
-              } // carry
+            carry: name: php:
+              carry // {
+                "${name}" = pkgs."${name}";
+                "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ pkgs."${name}" pkgs."${name}".packages.composer ] ++ envPackages; };
+              }
           )
           {
             "default" = self'.packages.env-php81;
@@ -47,14 +50,11 @@
           }
           phps;
 
-        devShells = builtins.foldl'
+        devShells = lib.foldlAttrs
           (
-            carry: php:
-              let
-                name = "php${pkgs.lib.versions.major php.version}${pkgs.lib.versions.minor php.version}";
-              in
+            carry: name: php:
               {
-                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ php php.packages.composer ]; };
+                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ pkgs."${name}" pkgs."${name}".packages.composer ]; };
                 "env-${name}" = self'.devShells."${name}".overrideAttrs (oldAttrs: { buildInputs = oldAttrs.buildInputs ++ envPackages; });
               } // carry
           )
@@ -68,15 +68,12 @@
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.nix-phps.overlays.default
-            inputs.nix-php-composer-builder.overlays.default
+            self.overlays.default
           ];
           config.allowUnfree = true;
         };
 
         formatter = pkgs.nixpkgs-fmt;
-
-        overlayAttrs = packages;
 
         inherit packages devShells;
       };
