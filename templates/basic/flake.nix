@@ -14,7 +14,7 @@
       let
         php = pkgs.api.buildPhpFromComposer {
           src = inputs.self;
-          php = pkgs.php81;  # Change to php56, php70, ..., php81, php82, php83 etc.
+          php = pkgs.php81; # Change to php56, php70, ..., php81, php82, php83 etc.
         };
       in
       {
@@ -153,146 +153,146 @@
             vendorHash = "sha256-Nv9pRQJ2Iij1IxPNcCk732Q79FWB/ARJRvjPVVyLMEc=";
           };
 
-        apps = {
-          mezzio-skeleton = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "mezzio-skeleton-demo";
+          apps = {
+            mezzio-skeleton = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "mezzio-skeleton-demo";
 
-              runtimeInputs = [
-                php
-              ];
+                runtimeInputs = [
+                  php
+                ];
 
-              text = ''
-                ${lib.getExe php} -S 0.0.0.0:8080 -t ${self'.packages.mezzio}/share/php/${self'.packages.mezzio.pname}/public/
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe php} -S 0.0.0.0:8080 -t ${self'.packages.mezzio}/share/php/${self'.packages.mezzio.pname}/public/
+                '';
+              });
+            };
 
-          symfony-demo = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "php-symfony-demo";
+            symfony-demo = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "php-symfony-demo";
 
-              runtimeInputs = [
-                php
-              ];
+                runtimeInputs = [
+                  php
+                ];
 
-              text = ''
-                APP_CACHE_DIR=$(mktemp -u)/cache
-                APP_LOG_DIR=$APP_CACHE_DIR/log
-                DATABASE_URL=sqlite:///$APP_CACHE_DIR/database.sqlite
+                text = ''
+                  APP_CACHE_DIR=$(mktemp -u)/cache
+                  APP_LOG_DIR=$APP_CACHE_DIR/log
+                  DATABASE_URL=sqlite:///$APP_CACHE_DIR/database.sqlite
 
-                export APP_CACHE_DIR
-                export APP_LOG_DIR
-                export DATABASE_URL
+                  export APP_CACHE_DIR
+                  export APP_LOG_DIR
+                  export DATABASE_URL
 
-                mkdir -p "$APP_CACHE_DIR"
-                mkdir -p "$APP_LOG_DIR"
+                  mkdir -p "$APP_CACHE_DIR"
+                  mkdir -p "$APP_LOG_DIR"
 
-                cp -f ${self'.packages.symfony-demo}/share/php/symfony-demo/data/database.sqlite "$APP_CACHE_DIR"/database.sqlite
-                chmod +w "$APP_CACHE_DIR"/database.sqlite
+                  cp -f ${self'.packages.symfony-demo}/share/php/symfony-demo/data/database.sqlite "$APP_CACHE_DIR"/database.sqlite
+                  chmod +w "$APP_CACHE_DIR"/database.sqlite
 
-                ${lib.getExe pkgs.symfony-cli} serve --document-root ${self'.packages.symfony-demo}/share/php/symfony-demo/public --allow-http
-              '';
-            });
-          };
+                  ${lib.getExe pkgs.symfony-cli} serve --document-root ${self'.packages.symfony-demo}/share/php/symfony-demo/public --allow-http
+                '';
+              });
+            };
 
-          # nix run .#satis -- --version
-          satis = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "satis";
+            # nix run .#satis -- --version
+            satis = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "satis";
 
-              text = ''
-                ${lib.getExe self'.packages.satis} "$@"
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe self'.packages.satis} "$@"
+                '';
+              });
+            };
 
-          # nix run .#composer -- --version
-          composer = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "composer";
+            # nix run .#composer -- --version
+            composer = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "composer";
 
-              runtimeInputs = [
-                php
-                php.packages.composer
-              ];
+                runtimeInputs = [
+                  php
+                  php.packages.composer
+                ];
 
-              text = ''
-                ${lib.getExe php.packages.composer} "$@"
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe php.packages.composer} "$@"
+                '';
+              });
+            };
 
-          # nix run .#grumphp -- --version
-          grumphp = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "grumphp";
+            # nix run .#grumphp -- --version
+            grumphp = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "grumphp";
 
-              runtimeInputs = [
-                php
-              ];
+                runtimeInputs = [
+                  php
+                ];
 
-              text = ''
-                ${lib.getExe php.packages.grumphp} "$@"
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe php.packages.grumphp} "$@"
+                '';
+              });
+            };
 
-          # nix run .#phpunit -- --version
-          phpunit = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "phpunit";
+            # nix run .#phpunit -- --version
+            phpunit = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "phpunit";
 
-              runtimeInputs = [
-                php
-              ];
+                runtimeInputs = [
+                  php
+                ];
 
-              text = ''
-                ${lib.getExe pkgs.phpunit} "$@"
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe pkgs.phpunit} "$@"
+                '';
+              });
+            };
 
-          # nix run .#phpstan -- --version
-          phpstan = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "phpstan";
+            # nix run .#phpstan -- --version
+            phpstan = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "phpstan";
 
-              runtimeInputs = [
-                php
-                php.packages.phpstan
-              ];
+                runtimeInputs = [
+                  php
+                  php.packages.phpstan
+                ];
 
-              text = ''
-                ${lib.getExe php.packages.phpstan} "$@"
-              '';
-            });
-          };
+                text = ''
+                  ${lib.getExe php.packages.phpstan} "$@"
+                '';
+              });
+            };
 
-          # nix run .#psalm -- --version
-          psalm = {
-            type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "psalm";
+            # nix run .#psalm -- --version
+            psalm = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellApplication {
+                name = "psalm";
 
-              runtimeInputs = [
-                php
-                php.packages.psalm
-              ];
+                runtimeInputs = [
+                  php
+                  php.packages.psalm
+                ];
 
-              text = ''
-                ${lib.getExe php.packages.psalm} "$@"
-              '';
-            });
+                text = ''
+                  ${lib.getExe php.packages.psalm} "$@"
+                '';
+              });
+            };
           };
         };
       };
-  };
-}
+  }
