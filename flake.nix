@@ -39,9 +39,9 @@
         packages = lib.foldlAttrs
           (
             carry: name: php:
-            let
-              phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
-            in
+              let
+                phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
+              in
               carry // {
                 "${name}" = php;
                 "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ phpFromComposer phpFromComposer.packages.composer ] ++ envPackages; };
@@ -56,9 +56,9 @@
         devShells = lib.foldlAttrs
           (
             carry: name: php:
-            let
-              phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
-            in
+              let
+                phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
+              in
               {
                 "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ phpFromComposer phpFromComposer.packages.composer ]; };
                 "env-${name}" = self'.devShells."${name}".overrideAttrs (oldAttrs: { buildInputs = oldAttrs.buildInputs ++ envPackages; });
