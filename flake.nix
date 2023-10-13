@@ -27,9 +27,12 @@
 
     perSystem = { self', inputs', config, pkgs, system, lib, ... }:
       let
-        phps = lib.filterAttrs (k: v: lib.isDerivation v) (inputs.self.overlays.default null pkgs);
-        # To fix: Why using this while it is already in use in the overlay?
         buildPhpFromComposer = pkgs.callPackage ./src/build-support/build-php-from-composer.nix { };
+
+        phps = lib.mapAttrs
+          # To fix: Why using this while it is already in use in the overlay?
+          (name: value: buildPhpFromComposer { php = value; src = self; })
+          (lib.filterAttrs (k: v: lib.isDerivation v) (inputs.self.overlays.default null pkgs));
 
         envPackages = [
           pkgs.symfony-cli
@@ -39,12 +42,9 @@
         packages = lib.foldlAttrs
           (
             carry: name: php:
-              let
-                phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
-              in
               carry // {
                 "${name}" = php;
-                "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ phpFromComposer phpFromComposer.packages.composer ] ++ envPackages; };
+                "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ php php.packages.composer ] ++ envPackages; };
               }
           )
           {
@@ -56,11 +56,8 @@
         devShells = lib.foldlAttrs
           (
             carry: name: php:
-              let
-                phpFromComposer = buildPhpFromComposer { inherit php; src = self; };
-              in
               {
-                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ phpFromComposer phpFromComposer.packages.composer ]; };
+                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ php php.packages.composer ]; };
                 "env-${name}" = self'.devShells."${name}".overrideAttrs (oldAttrs: { buildInputs = oldAttrs.buildInputs ++ envPackages; });
               } // carry
           )
