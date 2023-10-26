@@ -14,7 +14,7 @@ which can be installed on (_almost_) any operating system.
 Each available environment provides the following tools:
 
 - Composer,
-- Symfony CLi,
+- Symfony CLI,
 - SQLite
 
 Available stable PHP versions from `5.6` to `8.3`. But also weekly builds from
@@ -48,8 +48,8 @@ file.
 ...>8...
 ```
 
-To load extensions from `require` and `required-dev` sections, using the flag
-`--impure` is required. Exemple:
+To load extensions from the `require` and `required-dev` sections, using the flag
+`--impure` is required. Example:
 
 ```shell
 nix shell github:loophp/nix-shell#php82 --impure
@@ -65,7 +65,7 @@ cachix use nix-shell
 cachix use php-src-nix
 ```
 
-This project also provide a basic template for PHP projects, to use it, run:
+This project also provides a basic template for PHP projects, to use it, run:
 
 ```shell
 nix flake init --template github:loophp/nix-shell#basic
@@ -149,8 +149,7 @@ Use the packages:
 
 </details>
 
-To create your own version of PHP, use the API function `buildPhpFromComposer`
-function available.
+To create your own version of PHP, use the available API function `buildPhpFromComposer`.
 
 ### With direnv
 
@@ -159,13 +158,13 @@ feature that can load and unload environment variables depending on the current
 directory. You can use it within Nix ([nix-direnv][nix direnv]) and load a
 development environment just by changing directory.
 
-Edit the file `.envrc` and add the line:
+Edit the file `.envrc` and add the following line:
 
 ```
 use flake github:loophp/nix-shell#env-php-master-snapshot --impure
 ```
 
-And it's done !
+And it's done.
 
 ### Customize PHP
 
@@ -199,8 +198,8 @@ Feel free to contribute by sending pull requests. We are a
 usually very responsive team and we will help you going
 through your pull request from the beginning to the end.
 
-For some reasons, if you can't contribute to the code and
-willing to help, sponsoring is a good, sound and safe way
+For some reasons, if you can't contribute to the code and are
+willing to help, sponsoring is a good, sound, and safe way
 to show us some gratitude for the hours we invested in this
 package.
 
