@@ -246,7 +246,7 @@
     "php-active": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-7ISUiJjiPCu0yx/e+xcJMPskpDYl1bO9eum6cPkjnB8=",
+        "narHash": "sha256-20qIiLPpROWf6onLj1r7dMjt/VhUO8//fzYYt4KlPYQ=",
         "type": "file",
         "url": "https://www.php.net/releases/active"
       },
