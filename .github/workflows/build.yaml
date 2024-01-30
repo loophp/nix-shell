@@ -43,6 +43,7 @@ jobs:
           [
             { os: ubuntu-latest, arch: x86_64-linux },
             { os: macOS-latest, arch: x86_64-darwin },
+            { os: macos-14, arch: aarch64-darwin },
           ]
 
     steps:
