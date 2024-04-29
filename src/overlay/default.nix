@@ -1,7 +1,6 @@
 inputs:
 
-final:
-prev:
+final: prev:
 
 let
   phps = import ./phps.nix inputs final prev;

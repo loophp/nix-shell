@@ -10,75 +10,104 @@
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs @ { self, flake-parts, systems, ... }: flake-parts.lib.mkFlake { inherit inputs; } {
-    systems = import systems;
+  outputs =
+    inputs@{
+      self,
+      flake-parts,
+      systems,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import systems;
 
-    flake = {
-      templates = {
-        basic = {
-          path = ./templates/basic;
-          description = "A basic template for getting started with PHP development";
-          welcomeText = builtins.readFile ./templates/basic/README.md;
-        };
+      imports = [
+        ./src/imports/formatter.nix
+        ./src/imports/overlay.nix
+        ./src/imports/templates.nix
+      ];
+
+      flake = {
+        overlays.default = import ./src/overlay inputs;
       };
 
-      overlays.default = import ./src/overlay inputs;
-    };
+      perSystem =
+        {
+          self',
+          inputs',
+          config,
+          pkgs,
+          system,
+          lib,
+          ...
+        }:
+        let
+          buildPhpFromComposer = pkgs.callPackage ./src/build-support/build-php-from-composer.nix { };
 
-    perSystem = { self', inputs', config, pkgs, system, lib, ... }:
-      let
-        buildPhpFromComposer = pkgs.callPackage ./src/build-support/build-php-from-composer.nix { };
+          phps =
+            lib.mapAttrs
+              # To fix: Why using this while it is already in use in the overlay?
+              (
+                name: value:
+                buildPhpFromComposer {
+                  php = value;
+                  src = self;
+                }
+              )
+              (lib.filterAttrs (k: v: lib.isDerivation v) (inputs.self.overlays.default null pkgs));
 
-        phps = lib.mapAttrs
-          # To fix: Why using this while it is already in use in the overlay?
-          (name: value: buildPhpFromComposer { php = value; src = self; })
-          (lib.filterAttrs (k: v: lib.isDerivation v) (inputs.self.overlays.default null pkgs));
-
-        envPackages = [
-          pkgs.symfony-cli
-          pkgs.sqlite
-        ];
-
-        packages = lib.foldlAttrs
-          (
-            carry: name: php:
-              carry // {
-                "${name}" = php;
-                "env-${name}" = pkgs.buildEnv { name = "env-${name}"; paths = [ php php.packages.composer ] ++ envPackages; };
-              }
-          )
-          {
-            "default" = self'.packages.env-php81;
-            "env-default" = self'.packages.env-php81;
-          }
-          phps;
-
-        devShells = lib.foldlAttrs
-          (
-            carry: name: php:
-              {
-                "${name}" = pkgs.mkShellNoCC { name = "${name}"; buildInputs = [ php php.packages.composer ]; };
-                "env-${name}" = self'.devShells."${name}".overrideAttrs (oldAttrs: { buildInputs = oldAttrs.buildInputs ++ envPackages; });
-              } // carry
-          )
-          {
-            "default" = self'.devShells.env-php81;
-            "env-default" = self'.devShells.env-php81;
-          }
-          phps;
-      in
-      {
-        _module.args.pkgs = import self.inputs.nixpkgs {
-          inherit system;
-          overlays = [
-            self.overlays.default
+          envPackages = [
+            pkgs.symfony-cli
+            pkgs.sqlite
           ];
-          config.allowUnfree = true;
+
+          packages =
+            lib.foldlAttrs
+              (
+                carry: name: php:
+                carry
+                // {
+                  "${name}" = php;
+                  "env-${name}" = pkgs.buildEnv {
+                    name = "env-${name}";
+                    paths = [
+                      php
+                      php.packages.composer
+                    ] ++ envPackages;
+                  };
+                }
+              )
+              {
+                "default" = self'.packages.env-php81;
+                "env-default" = self'.packages.env-php81;
+              }
+              phps;
+
+          devShells =
+            lib.foldlAttrs
+              (
+                carry: name: php:
+                {
+                  "${name}" = pkgs.mkShellNoCC {
+                    name = "${name}";
+                    buildInputs = [
+                      php
+                      php.packages.composer
+                    ];
+                  };
+                  "env-${name}" = self'.devShells."${name}".overrideAttrs (oldAttrs: {
+                    buildInputs = oldAttrs.buildInputs ++ envPackages;
+                  });
+                }
+                // carry
+              )
+              {
+                "default" = self'.devShells.env-php81;
+                "env-default" = self'.devShells.env-php81;
+              }
+              phps;
+        in
+        {
+          inherit packages devShells;
         };
-
-        formatter = pkgs.nixpkgs-fmt;
-
-        inherit packages devShells;
-      };
-  };
+    };
 }

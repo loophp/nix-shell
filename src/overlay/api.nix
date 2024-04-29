@@ -1,7 +1,6 @@
 inputs:
 
-final:
-prev:
+final: prev:
 
 let
   buildPhpFromComposer = prev.callPackage ../build-support/build-php-from-composer.nix { };
