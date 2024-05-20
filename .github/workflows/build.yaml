@@ -56,7 +56,7 @@ jobs:
       - name: Run the Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
 
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           name: nix-shell
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
