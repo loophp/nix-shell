@@ -1,0 +1,12 @@
+{
+    "name": "pol/nix-shell",
+    "authors": [
+        {
+            "name": "Pol Dellaiera",
+            "email": "pol.dellaiera@protonmail.com"
+        }
+    ],
+    "require": {
+        "ext-xdebug": "*"
+    }
+}
