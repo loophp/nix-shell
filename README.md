@@ -62,7 +62,6 @@ building those PHP packages yourself.
 
 ```shell
 cachix use nix-shell
-cachix use php-src-nix
 ```
 
 This project also provides a basic template for PHP projects, to use it, run:
