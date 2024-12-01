@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-phps.url = "github:fossar/nix-phps";
-    php-src-nix.url = "github:loophp/php-src-nix";
     # Shim to make flake.nix work with stable Nix.
     flake-compat.url = "github:nix-community/flake-compat";
     systems.url = "github:nix-systems/default";
@@ -33,10 +32,7 @@
       perSystem =
         {
           self',
-          inputs',
-          config,
           pkgs,
-          system,
           lib,
           ...
         }:
