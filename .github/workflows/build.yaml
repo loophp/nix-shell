@@ -46,6 +46,10 @@ jobs:
             { os: macOS-latest, arch: x86_64-darwin },
             { os: macos-14, arch: aarch64-darwin },
           ]
+        exclude:
+          - phps: php56
+            archs:
+              - { os: ubuntu-24.04-arm, arch: aarch64-linux }
 
     steps:
       - name: Set up Git repository
