@@ -47,7 +47,8 @@ jobs:
             { os: macos-14, arch: aarch64-darwin },
           ]
         exclude:
-          - phps: php56
+          - phps:
+              - "php56"
             archs:
               - { os: ubuntu-24.04-arm, arch: aarch64-linux }
 
