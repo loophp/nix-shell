@@ -6,7 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  createPullRequest:
-    uses: loophp/flake-lock-update-workflow/.github/workflows/upgrade-flakes.yaml@main
-    secrets:
-      token: "${{ secrets.GH_TOKEN }}"
+  update-flake-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Run script
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          nix run github:drupol/infra#gh-flake-update -- \
+            --assignee drupol \
+            --reviewer drupol \
+            packages.x86_64-linux.php84 \
+            packages.x86_64-linux.php83 \
+            packages.x86_64-linux.php82 \
+            packages.x86_64-linux.php81 \
+            packages.x86_64-linux.php80 \
+            packages.x86_64-linux.php74
