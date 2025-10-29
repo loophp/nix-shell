@@ -17,13 +17,7 @@ Each available environment provides the following tools:
 - Symfony CLI,
 - SQLite
 
-Available stable PHP versions from `5.6` to `8.3`. But also weekly builds from
-the following branches:
-
-- `PHP-8.1`
-- `PHP-8.2`
-- `PHP-8.3`
-- `master` (_future 8.4_)
+Available stable PHP versions from `5.6` to `8.4`.
 
 To list the available PHP versions, run:
 
@@ -227,7 +221,6 @@ For more detailed changelogs, please check [the release changelogs][45].
 [code coverage]: https://img.shields.io/scrutinizer/coverage/g/loophp/nix-shell/master.svg?style=flat-square
 [license]: https://img.shields.io/packagist/l/loophp/nix-shell.svg?style=flat-square
 [donate github]: https://img.shields.io/badge/Sponsor-Github-brightgreen.svg?style=flat-square
-[donate paypal]: https://img.shields.io/badge/Sponsor-Paypal-brightgreen.svg?style=flat-square
 [34]: https://github.com/loophp/nix-shell/issues
 [2]: https://github.com/loophp/nix-shell/actions
 [35]: http://www.phpspec.net/
