@@ -8,7 +8,7 @@
       ...
     }:
     let
-      buildPhpFromComposer = pkgs.callPackage ../src/build-support/build-php-from-composer.nix { };
+      inherit (config.lib) buildPhpFromComposer;
 
       phps =
         lib.mapAttrs
@@ -27,6 +27,8 @@
         pkgs.sqlite
       ];
 
+    in
+    {
       packages =
         lib.foldlAttrs
           (
@@ -49,10 +51,6 @@
             "env-default" = config.packages.env-php82;
           }
           phps;
-
-    in
-    {
-      inherit packages;
 
       devShells =
         lib.foldlAttrs

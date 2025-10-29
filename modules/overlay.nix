@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ withSystem, inputs, ... }:
 
 {
   perSystem =
@@ -17,21 +17,23 @@
   flake = {
     overlays.default =
       final: prev:
-      let
-        buildPhpFromComposer = prev.callPackage ../src/build-support/build-php-from-composer.nix { };
-        nix-phps = inputs.nix-phps.overlays.default final prev;
-        phps = builtins.mapAttrs (
-          _name: value:
-          buildPhpFromComposer {
-            php = value;
-            src = inputs.self;
-          }
-        ) nix-phps;
-        api = {
-          inherit buildPhpFromComposer;
-        };
-      in
-      phps // api;
+      withSystem prev.stdenv.hostPlatform.system (
+        { config, ... }:
+        let
+          inherit (config.lib) buildPhpFromComposer;
+          nix-phps = inputs.nix-phps.overlays.default final prev;
+          phps = builtins.mapAttrs (
+            _name: value:
+            buildPhpFromComposer {
+              php = value;
+              src = inputs.self;
+            }
+          ) nix-phps;
+          api = {
+            inherit buildPhpFromComposer;
+          };
+        in
+        phps // api
+      );
   };
-
 }
