@@ -1,5 +1,4 @@
 name: Builds
-
 on:
   pull_request:
   push:
@@ -8,29 +7,23 @@ on:
     paths:
       - "**.nix"
       - ".github/workflows/*.yaml"
-
 jobs:
   determine-matrix:
     name: Figure out the packages we need to build
     runs-on: ubuntu-latest
-
     outputs:
       phps: ${{ steps.set-phps.outputs.phps }}
-
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v5
-
       - name: Install Nix
         uses: cachix/install-nix-action@v31
-
       - name: Build PHP matrix
         id: set-phps
         run: |
           echo phps=$(
             nix eval --json --impure --expr 'builtins.filter (x: builtins.substring 0 3 x == "php") (builtins.attrNames (import ./.).packages.x86_64-linux)'
           ) >> $GITHUB_OUTPUT
-
   build:
     name: "${{ matrix.phps }} on ${{ matrix.archs.arch }}"
     needs: [determine-matrix]
@@ -39,13 +32,7 @@ jobs:
       fail-fast: false
       matrix:
         phps: ${{fromJson(needs.determine-matrix.outputs.phps)}}
-        archs:
-          [
-            { os: ubuntu-24.04-arm, arch: aarch64-linux },
-            { os: ubuntu-latest, arch: x86_64-linux },
-            { os: macOS-latest, arch: x86_64-darwin },
-            { os: macos-14, arch: aarch64-darwin },
-          ]
+        archs: [{os: ubuntu-24.04-arm, arch: aarch64-linux}, {os: ubuntu-latest, arch: x86_64-linux}, {os: macOS-latest, arch: x86_64-darwin}, {os: macos-14, arch: aarch64-darwin}]
         exclude:
           - phps: "php56"
             archs:
@@ -54,24 +41,19 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v5
-
       - name: Install Nix
         uses: cachix/install-nix-action@v31
-
       - uses: cachix/cachix-action@v16
         with:
           name: nix-shell
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           extraPullNames: fossar
-
       - name: Build ${{ matrix.phps }} binary
         run: |
           nix build .#${{ matrix.phps }}
-
       - name: Build ${{ matrix.phps }} environment
         run: |
           nix build .#env-${{ matrix.phps }}
-
       - name: Build ${{ matrix.phps }} with all extensions enabled
         continue-on-error: true
         run: |

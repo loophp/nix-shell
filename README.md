@@ -23,7 +23,7 @@ the following branches:
 - `PHP-8.1`
 - `PHP-8.2`
 - `PHP-8.3`
-- `master` (*future 8.4*)
+- `master` (_future 8.4_)
 
 To list the available PHP versions, run:
 
@@ -96,9 +96,9 @@ Since the 14th of November 2022, PHP is in `NTS` mode by default (see
 
 To list the available PHP versions and environments, run:
 
-  ```shell
-  nix flake show github:loophp/nix-shell
-  ```
+```shell
+nix flake show github:loophp/nix-shell
+```
 
 ### In another flake
 

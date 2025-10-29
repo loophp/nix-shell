@@ -1,21 +1,16 @@
 name: "Merge"
-
 on:
   workflow_run:
     types:
       - "completed"
     workflows:
       - "Builds"
-
 jobs:
   merge:
     name: "Merge"
-
     runs-on: "ubuntu-latest"
-
     if: >
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: "Request review from @loophp-bot"
@@ -36,7 +31,6 @@ jobs:
               pull_number: pullRequest.number,
               reviewers: reviewers,
             })
-
       - name: "Assign @loophp-bot"
         uses: "actions/github-script@v8"
         with:
@@ -55,7 +49,6 @@ jobs:
               assignees: assignees,
               issue_number: pullRequest.number
             })
-
       - name: "Approve pull request"
         uses: "actions/github-script@v8"
         with:
@@ -70,7 +63,6 @@ jobs:
               repo: repository.repo,
               pull_number: pullRequest.number,
             })
-
       - name: "Merge pull request"
         uses: "actions/github-script@v8"
         with:
