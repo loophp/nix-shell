@@ -68,7 +68,8 @@
                     paths = [
                       php
                       php.packages.composer
-                    ] ++ envPackages;
+                    ]
+                    ++ envPackages;
                   };
                 }
               )
