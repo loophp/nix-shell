@@ -61,13 +61,13 @@
             {
               "${name}" = pkgs.mkShellNoCC {
                 name = "${name}";
-                packages = [
+                buildInputs = [
                   php
                   php.packages.composer
                 ];
               };
               "env-${name}" = config.devShells."${name}".overrideAttrs (oldAttrs: {
-                packages = oldAttrs.packages ++ envPackages;
+                buildInputs = oldAttrs.buildInputs ++ envPackages;
               });
             }
             // carry
