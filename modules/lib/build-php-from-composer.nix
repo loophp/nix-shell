@@ -10,7 +10,7 @@ let
       composerJson,
       section,
       default ? { },
-    }@args:
+    }:
     let
       readJsonSectionFromFile =
         _file: section: default:
@@ -24,7 +24,7 @@ let
         filecontent.${section} or default;
 
       # Get "require" section to extract extensions later
-      require = readJsonSectionFromFile args.composerJson args.section args.default;
+      require = readJsonSectionFromFile composerJson section default;
       # Copy keys into values
       composerRequiresKeys = map (p: lib.attrsets.mapAttrs' (k: _v: lib.nameValuePair k k) p) [ require ];
       # Convert sets into lists
@@ -43,7 +43,6 @@ in
       {
         src,
         php ? inputs.php,
-        extensions ? [ ],
         withExtensions ? [ ],
         withoutExtensions ? [ ],
         extraConfig ? null,
@@ -133,22 +132,18 @@ in
               (getExtensionsFromSection {
                 composerJson = "${src}/composer.json";
                 section = "require";
-                default = { };
               })
               ++ (getExtensionsFromSection {
                 composerJson = "${src}/composer.json";
                 section = "require-dev";
-                default = { };
               })
               ++ (getExtensionsFromSection {
                 composerJson = "${builtins.getEnv "PWD"}/composer.json";
                 section = "require";
-                default = { };
               })
               ++ (getExtensionsFromSection {
                 composerJson = "${builtins.getEnv "PWD"}/composer.json";
                 section = "require-dev";
-                default = { };
               });
           };
       };

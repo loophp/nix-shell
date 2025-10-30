@@ -1,0 +1,14 @@
+Welcome to the PHP Development Shell ! 🚀
+
+You're now in a reproducible environment tailored for PHP projects.
+
+This shell includes:
+- PHP (https://php.net)
+- Composer (https://getcomposer.org)
+- Symfony CLI (https://symfony.com/doc/current/setup/symfony_cli.html)
+- SQLite3 (https://sqlite.org/)
+
+Happy coding !
+
+Support: https://github.com/loophp/nix-shell/issues
+Donate: https://github.com/drupol

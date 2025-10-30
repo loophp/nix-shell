@@ -9,6 +9,7 @@
     # Shim to make flake.nix work with stable Nix.
     flake-compat.url = "github:nix-community/flake-compat";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    make-shell.url = "github:nicknovitski/make-shell";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

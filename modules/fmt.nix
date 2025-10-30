@@ -31,6 +31,7 @@
           "*.toml"
           "*.svg"
           "*.xml"
+          "*.txt"
           ".auto-changelog"
           ".user.ini"
           "*/.gitignore"
