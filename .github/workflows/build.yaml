@@ -51,9 +51,6 @@ jobs:
       - name: Build ${{ matrix.phps }} binary
         run: |
           nix build .#${{ matrix.phps }}
-      - name: Build ${{ matrix.phps }} environment
-        run: |
-          nix build .#env-${{ matrix.phps }}
       - name: Build ${{ matrix.phps }} with all extensions enabled
         continue-on-error: true
         run: |
