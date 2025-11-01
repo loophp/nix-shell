@@ -1,5 +1,4 @@
-[![GitHub stars][github stars]][1]
-[![Donate!][donate github]][5]
+[![GitHub stars][github stars]][1] [![Donate!][donate github]][5]
 
 # Nix (PHP) Shell
 
@@ -7,9 +6,9 @@
 
 ## Description
 
-This package provides a `Nix flake` ready to use
-for PHP development, using the [`Nix` package manager][50]
-which can be installed on (_almost_) any operating system.
+This package provides a `Nix flake` ready to use for PHP development, using the
+[`Nix` package manager][50] which can be installed on (_almost_) any operating
+system.
 
 Available stable PHP versions from `5.6` to `8.4`.
 
@@ -18,6 +17,10 @@ To list the available PHP versions, run:
 ```shell
 nix flake show github:loophp/nix-shell
 ```
+
+The added value of this package is the ability to create custom PHP builds based
+on your project's `composer.json` file. This way, you can be sure that the PHP
+extensions you need are available in your development environment.
 
 The PHP extensions to use are automatically inferred from the `composer.json`
 file.
@@ -36,26 +39,11 @@ file.
 ...>8...
 ```
 
-To load extensions from the `require` and `required-dev` sections, using the flag
-`--impure` is required. Example:
+To load extensions from the `require` and `required-dev` sections, using the
+flag `--impure` is required. Example:
 
 ```shell
 nix develop github:loophp/nix-shell#php82 --impure
-```
-
-We use [Cachix](https://app.cachix.org/cache/nix-shell) to store binaries of the
-built packages. Install it as described in its [docs](https://docs.cachix.org/)
-and then add the cache using `cachix use nix-shell` if you want to avoid
-building those PHP packages yourself.
-
-```shell
-cachix use nix-shell
-```
-
-This project also provides a basic template for PHP projects, to use it, run:
-
-```shell
-nix flake init --template github:loophp/nix-shell#basic
 ```
 
 ## Usage
@@ -67,13 +55,13 @@ opt-in option.
 
 ### In a shell
 
-To work with PHP 8.1 only:
+To work with PHP 8.2 only:
 
 ```shell
 nix develop github:loophp/nix-shell#php82
 ```
 
-or with PHP 8.1 and a couple of useful tools:
+or with PHP 8.2 and a couple of useful tools:
 
 ```shell
 nix develop github:loophp/nix-shell#env-php82
@@ -136,7 +124,8 @@ Use the packages:
 
 </details>
 
-To create your own version of PHP, use the available API function `buildPhpFromComposer`.
+To create your own version of PHP, use the available API function
+`buildPhpFromComposer`.
 
 ### With direnv
 
@@ -176,19 +165,18 @@ Then run:
 nix develop github:loophp/nix-shell#php82 --impure
 ```
 
-The `--impure` flag is important to make sure that your custom
-`.user.ini` file is correctly taken in account.
+The `--impure` flag is important to make sure that your custom `.user.ini` file
+is correctly taken in account.
 
 ## Contributing
 
-Feel free to contribute by sending pull requests. We are a
-usually very responsive team and we will help you going
-through your pull request from the beginning to the end.
+Feel free to contribute by sending pull requests. We are a usually very
+responsive team and we will help you going through your pull request from the
+beginning to the end.
 
-For some reasons, if you can't contribute to the code and are
-willing to help, sponsoring is a good, sound, and safe way
-to show us some gratitude for the hours we invested in this
-package.
+For some reasons, if you can't contribute to the code and are willing to help,
+sponsoring is a good, sound, and safe way to show us some gratitude for the
+hours we invested in this package.
 
 Sponsor me on [Github][5] and/or any of [the contributors][6].
 
@@ -204,17 +192,26 @@ See [CHANGELOG.md][43] for a changelog based on [git commits][44].
 For more detailed changelogs, please check [the release changelogs][45].
 
 [1]: https://packagist.org/packages/loophp/nix-shell
-[latest stable version]: https://img.shields.io/packagist/v/loophp/nix-shell.svg?style=flat-square
-[github stars]: https://img.shields.io/github/stars/loophp/nix-shell.svg?style=flat-square
-[total downloads]: https://img.shields.io/packagist/dt/loophp/nix-shell.svg?style=flat-square
-[github workflow status]: https://img.shields.io/github/workflow/status/loophp/nix-shell/Unit%20tests?style=flat-square
-[code quality]: https://img.shields.io/scrutinizer/quality/g/loophp/nix-shell/master.svg?style=flat-square
+[latest stable version]:
+  https://img.shields.io/packagist/v/loophp/nix-shell.svg?style=flat-square
+[github stars]:
+  https://img.shields.io/github/stars/loophp/nix-shell.svg?style=flat-square
+[total downloads]:
+  https://img.shields.io/packagist/dt/loophp/nix-shell.svg?style=flat-square
+[github workflow status]:
+  https://img.shields.io/github/workflow/status/loophp/nix-shell/Unit%20tests?style=flat-square
+[code quality]:
+  https://img.shields.io/scrutinizer/quality/g/loophp/nix-shell/master.svg?style=flat-square
 [3]: https://scrutinizer-ci.com/g/loophp/nix-shell/?branch=master
-[type coverage]: https://img.shields.io/badge/dynamic/json?style=flat-square&color=color&label=Type%20coverage&query=message&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Floophp%2Fcollection%2Fcoverage
+[type coverage]:
+  https://img.shields.io/badge/dynamic/json?style=flat-square&color=color&label=Type%20coverage&query=message&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Floophp%2Fcollection%2Fcoverage
 [4]: https://shepherd.dev/github/loophp/nix-shell
-[code coverage]: https://img.shields.io/scrutinizer/coverage/g/loophp/nix-shell/master.svg?style=flat-square
-[license]: https://img.shields.io/packagist/l/loophp/nix-shell.svg?style=flat-square
-[donate github]: https://img.shields.io/badge/Sponsor-Github-brightgreen.svg?style=flat-square
+[code coverage]:
+  https://img.shields.io/scrutinizer/coverage/g/loophp/nix-shell/master.svg?style=flat-square
+[license]:
+  https://img.shields.io/packagist/l/loophp/nix-shell.svg?style=flat-square
+[donate github]:
+  https://img.shields.io/badge/Sponsor-Github-brightgreen.svg?style=flat-square
 [34]: https://github.com/loophp/nix-shell/issues
 [2]: https://github.com/loophp/nix-shell/actions
 [35]: http://www.phpspec.net/
