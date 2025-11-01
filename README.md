@@ -1,7 +1,7 @@
 [![GitHub stars][github stars]][1]
 [![Donate!][donate github]][5]
 
-# Nix shell
+# Nix (PHP) Shell
 
 ![Tutorial](./docs/readme.gif "Tutorial")
 
@@ -10,12 +10,6 @@
 This package provides a `Nix flake` ready to use
 for PHP development, using the [`Nix` package manager][50]
 which can be installed on (_almost_) any operating system.
-
-Each available environment provides the following tools:
-
-- Composer,
-- Symfony CLI,
-- SQLite
 
 Available stable PHP versions from `5.6` to `8.4`.
 
@@ -46,7 +40,7 @@ To load extensions from the `require` and `required-dev` sections, using the fla
 `--impure` is required. Example:
 
 ```shell
-nix shell github:loophp/nix-shell#php82 --impure
+nix develop github:loophp/nix-shell#php82 --impure
 ```
 
 We use [Cachix](https://app.cachix.org/cache/nix-shell) to store binaries of the
@@ -76,13 +70,13 @@ opt-in option.
 To work with PHP 8.1 only:
 
 ```shell
-nix shell github:loophp/nix-shell#php81
+nix develop github:loophp/nix-shell#php82
 ```
 
 or with PHP 8.1 and a couple of useful tools:
 
 ```shell
-nix shell github:loophp/nix-shell#env-php81
+nix develop github:loophp/nix-shell#env-php82
 ```
 
 Since the 14th of November 2022, PHP is in `NTS` mode by default (see
@@ -106,7 +100,7 @@ Import the input:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    phps.url = "github:loophp/nix-shell";
+    nix-shell.url = "github:loophp/nix-shell";
   };
 ```
 
@@ -120,10 +114,10 @@ Import the overlay:
 
 ```nix
 pkgs = import inputs.nixpkgs {
-    inherit system;
-    overlays = [
-        inputs.phps.overlays.default
-    ];
+  inherit system;
+  overlays = [
+    inputs.nix-shell.overlays.default
+  ];
 };
 ```
 
@@ -136,8 +130,8 @@ pkgs = import inputs.nixpkgs {
 Use the packages:
 
 ```nix
-    # PHP 8.1 environment
-    pkgs.env-php81
+  # PHP 8.2
+  pkgs.nix-shell.php82
 ```
 
 </details>
@@ -164,7 +158,7 @@ And it's done.
 To customize the PHP configuration, you can do it like this:
 
 ```shell
-nix shell github:loophp/nix-shell#php81
+nix develop github:loophp/nix-shell#php82
 php -c /path/to/the/config.ini <<command>>
 ```
 
@@ -179,7 +173,7 @@ memory_limit = 2048M
 Then run:
 
 ```shell
-nix shell github:loophp/nix-shell#php82 --impure
+nix develop github:loophp/nix-shell#php82 --impure
 ```
 
 The `--impure` flag is important to make sure that your custom

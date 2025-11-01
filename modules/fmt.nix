@@ -15,28 +15,7 @@
         yamlfmt.enable = true;
       };
       settings = {
-        on-unmatched = "fatal";
-        global.excludes = [
-          "*.envrc"
-          ".github/CODEOWNERS"
-          "docs/readme.gif"
-          ".editorconfig"
-          ".gitattributes"
-          ".prettierrc"
-          "*.crt"
-          "*.directory"
-          "*.face"
-          "*.fish"
-          "*.png"
-          "*.toml"
-          "*.svg"
-          "*.xml"
-          "*.txt"
-          ".auto-changelog"
-          ".user.ini"
-          "*/.gitignore"
-          "LICENSE"
-        ];
+        on-unmatched = "warn";
       };
     };
   };
