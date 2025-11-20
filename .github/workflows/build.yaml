@@ -15,7 +15,7 @@ jobs:
       phps: ${{ steps.set-phps.outputs.phps }}
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install Nix
         uses: cachix/install-nix-action@v31
       - name: Build PHP matrix
@@ -40,7 +40,7 @@ jobs:
               arch: aarch64-linux
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install Nix
         uses: cachix/install-nix-action@v31
       - uses: cachix/cachix-action@v16
