@@ -46,16 +46,45 @@ flag `--impure` is required. Example:
 nix develop github:loophp/nix-shell#php82 --impure
 ```
 
+## How it works
+
+This project is built on top of [nix-phps], which provides a comprehensive
+collection of PHP versions for Nix.
+
+The key differentiator of this project is its ability to **automatically
+configure your PHP environment** based on your project's `composer.json` file.
+It parses the `require` and `require-dev` sections of `composer.json` to
+identify required PHP extensions and compiles a custom PHP binary with exactly
+those extensions enabled.
+
+Technically, this leverages a Nix feature called **IFD** ([Import From
+Derivation]), allowing the Nix expression to dynamically depend on the content
+of the `composer.json` file during evaluation time.
+
+> [!NOTE] IFD is a feature that is not allowed in `nixpkgs` because it prevents
+> evaluation of the Nix expression without building the derivation first.
+
 ## Usage
 
 While being extremely stable for years, "[flake][nix flake]" is an upcoming
-feature of the Nix package manager. In order to use it, you must explicitly
-enable it, please check the documentation to enable it, this is currently an
-opt-in option.
+feature of the Nix package manager.
+
+However, enabling experimental features is **not mandatory**. Thanks to
+[flake-compat], you can use legacy Nix commands (like `nix-shell` or
+`nix-build`) which will transparently fetch and use the flake outputs.
 
 ### In a shell
 
 To work with PHP 8.2 only:
+
+```shell
+# 1. Clone the repository
+# 2. Run in the repository directory
+# 3. Replace `x86_64-linux` with your architecture
+nix-shell -A devShells.x86_64-linux.php82
+```
+
+Or with `flakes` experimental feature enabled:
 
 ```shell
 nix develop github:loophp/nix-shell#php82
@@ -87,7 +116,6 @@ Import the input:
 ```nix
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
     nix-shell.url = "github:loophp/nix-shell";
   };
 ```
@@ -232,3 +260,7 @@ For more detailed changelogs, please check [the release changelogs][45].
 [doc .user.ini]: https://www.php.net/manual/en/configuration.file.per-user.php
 [nix flake]: https://nixos.wiki/wiki/Flakes
 [nix direnv]: https://github.com/nix-community/nix-direnv
+[flake compat]: https://github.com/NixOS/flake-compat
+[nix phps]: https://github.com/fossar/nix-phps
+[fossar]: https://github.com/fossar
+[Import From Derivation]: https://wiki.nixos.org/wiki/Import_From_Derivation
