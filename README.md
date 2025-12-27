@@ -48,8 +48,8 @@ nix develop github:loophp/nix-shell#php82 --impure
 
 ## How it works
 
-This project is built on top of [nix-phps], which provides a comprehensive
-collection of PHP versions for Nix.
+This project is built on top of [fossar/nix-phps], which provides a
+comprehensive collection of PHP versions for Nix.
 
 The key differentiator of this project is its ability to **automatically
 configure your PHP environment** based on your project's `composer.json` file.
@@ -61,13 +61,14 @@ Technically, this leverages a Nix feature called **IFD** ([Import From
 Derivation]), allowing the Nix expression to dynamically depend on the content
 of the `composer.json` file during evaluation time.
 
-> [!NOTE] IFD is a feature that is not allowed in `nixpkgs` because it prevents
-> evaluation of the Nix expression without building the derivation first.
+> [!NOTE] IFD is a feature that is not allowed in [`NixOS/nixpkgs`] because it
+> prevents evaluation of the Nix expression without building the derivation
+> first.
 
 ## Usage
 
-While being extremely stable for years, "[flake][nix flake]" is an upcoming
-feature of the Nix package manager.
+While being extremely stable for years, [`flakes`] is an upcoming feature of the
+Nix package manager.
 
 However, enabling experimental features is **not mandatory**. Thanks to
 [flake-compat], you can use legacy Nix commands (like `nix-shell` or
@@ -157,9 +158,9 @@ To create your own version of PHP, use the available API function
 
 ### With direnv
 
-`direnv` is an extension for your shell. It augments existing shells with a new
-feature that can load and unload environment variables depending on the current
-directory. You can use it within Nix ([nix-direnv][nix direnv]) and load a
+[`direnv`] is an extension for your shell. It augments existing shells with a
+new feature that can load and unload environment variables depending on the
+current directory. You can use it within Nix ([nix-direnv]) and load a
 development environment just by changing directory.
 
 Edit the file `.envrc` and add the following line:
@@ -258,9 +259,11 @@ For more detailed changelogs, please check [the release changelogs][45].
 [50]: https://nixos.org/download.html
 [52]: https://github.com/aanderse
 [doc .user.ini]: https://www.php.net/manual/en/configuration.file.per-user.php
-[nix flake]: https://nixos.wiki/wiki/Flakes
-[nix direnv]: https://github.com/nix-community/nix-direnv
-[flake compat]: https://github.com/NixOS/flake-compat
-[nix phps]: https://github.com/fossar/nix-phps
+[`flakes`]: https://wiki.nixos.org/wiki/Flakes
+[nix-direnv]: https://github.com/nix-community/nix-direnv
+[flake-compat]: https://github.com/NixOS/flake-compat
+[fossar/nix-phps]: https://github.com/fossar/nix-phps
 [fossar]: https://github.com/fossar
 [Import From Derivation]: https://wiki.nixos.org/wiki/Import_From_Derivation
+[`NixOS/nixpkgs`]: https://github.com/NixOS/nixpkgs
+[`direnv`]: https://direnv.net/
