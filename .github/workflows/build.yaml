@@ -57,4 +57,4 @@ jobs:
           NIXPKGS_ALLOW_BROKEN=1 \
           NIXPKGS_ALLOW_UNFREE=1 \
           NIXPKGS_ALLOW_INSECURE=1 \
-          nix build --impure --expr 'let pkgs = (import ./.).outputs.packages.${builtins.currentSystem}; php = pkgs.${{ matrix.phps }}; allExtensions = (builtins.attrNames php.extensions);  in (import ./.).api.makePhp pkgs {php = "${{ matrix.phps }}"; withExtensions = allExtensions;}'
+          nix-build --impure --expr 'let pkgs = (import ./.).outputs.packages.${builtins.currentSystem}; allExtensions = (builtins.attrNames php.extensions); in (pkgs."${{ matrix.phps }}".withExtensions ({enabled, all}: (enabled)))'
