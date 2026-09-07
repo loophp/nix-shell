@@ -1,12 +1,11 @@
-Welcome to the PHP Development Shell ! 🚀
+Welcome to the PHP Development Shell! 🚀
 
-You're now in a reproducible environment tailored for PHP projects.
+You are now in a reproducible development environment tailored for PHP projects.
 
-This shell includes:
-- PHP (https://php.net)
-- Composer (https://getcomposer.org)
+Available tools:
+@packages@
 
-Happy coding !
+Happy coding! ✨
 
 Support: https://github.com/loophp/nix-shell/issues
 Donate: https://github.com/drupol

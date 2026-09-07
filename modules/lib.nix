@@ -8,12 +8,13 @@
       libOutputModule =
         { lib, ... }:
         inputs.flake-parts.lib.mkTransposedPerSystemModule {
-          name = "lib";
-          option = lib.mkOption {
-            type = lib.types.lazyAttrsOf lib.types.anything;
-            default = { };
-          };
           file = "";
+          name = "lib";
+
+          option = lib.mkOption {
+            default = { };
+            type = lib.types.lazyAttrsOf lib.types.anything;
+          };
         };
     in
     [

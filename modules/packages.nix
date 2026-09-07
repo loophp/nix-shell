@@ -4,7 +4,7 @@
 }:
 {
   perSystem =
-    { pkgs, config, ... }:
+    { config, pkgs, ... }:
     {
       packages =
         (builtins.mapAttrs (

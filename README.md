@@ -221,26 +221,17 @@ See [CHANGELOG.md][43] for a changelog based on [git commits][44].
 For more detailed changelogs, please check [the release changelogs][45].
 
 [1]: https://packagist.org/packages/loophp/nix-shell
-[latest stable version]:
-  https://img.shields.io/packagist/v/loophp/nix-shell.svg?style=flat-square
-[github stars]:
-  https://img.shields.io/github/stars/loophp/nix-shell.svg?style=flat-square
-[total downloads]:
-  https://img.shields.io/packagist/dt/loophp/nix-shell.svg?style=flat-square
-[github workflow status]:
-  https://img.shields.io/github/workflow/status/loophp/nix-shell/Unit%20tests?style=flat-square
-[code quality]:
-  https://img.shields.io/scrutinizer/quality/g/loophp/nix-shell/master.svg?style=flat-square
+[latest stable version]: https://img.shields.io/packagist/v/loophp/nix-shell.svg?style=flat-square
+[github stars]: https://img.shields.io/github/stars/loophp/nix-shell.svg?style=flat-square
+[total downloads]: https://img.shields.io/packagist/dt/loophp/nix-shell.svg?style=flat-square
+[github workflow status]: https://img.shields.io/github/workflow/status/loophp/nix-shell/Unit%20tests?style=flat-square
+[code quality]: https://img.shields.io/scrutinizer/quality/g/loophp/nix-shell/master.svg?style=flat-square
 [3]: https://scrutinizer-ci.com/g/loophp/nix-shell/?branch=master
-[type coverage]:
-  https://img.shields.io/badge/dynamic/json?style=flat-square&color=color&label=Type%20coverage&query=message&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Floophp%2Fcollection%2Fcoverage
+[type coverage]: https://img.shields.io/badge/dynamic/json?style=flat-square&color=color&label=Type%20coverage&query=message&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Floophp%2Fcollection%2Fcoverage
 [4]: https://shepherd.dev/github/loophp/nix-shell
-[code coverage]:
-  https://img.shields.io/scrutinizer/coverage/g/loophp/nix-shell/master.svg?style=flat-square
-[license]:
-  https://img.shields.io/packagist/l/loophp/nix-shell.svg?style=flat-square
-[donate github]:
-  https://img.shields.io/badge/Sponsor-Github-brightgreen.svg?style=flat-square
+[code coverage]: https://img.shields.io/scrutinizer/coverage/g/loophp/nix-shell/master.svg?style=flat-square
+[license]: https://img.shields.io/packagist/l/loophp/nix-shell.svg?style=flat-square
+[donate github]: https://img.shields.io/badge/Sponsor-Github-brightgreen.svg?style=flat-square
 [34]: https://github.com/loophp/nix-shell/issues
 [2]: https://github.com/loophp/nix-shell/actions
 [35]: http://www.phpspec.net/

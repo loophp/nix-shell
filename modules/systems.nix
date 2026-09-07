@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ lib, ... }:
 {
-  systems = inputs.nixpkgs.lib.systems.flakeExposed;
+  systems = lib.systems.flakeExposed;
 }
