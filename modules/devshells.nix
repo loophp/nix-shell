@@ -79,6 +79,14 @@
           name = "Symfony CLI";
         };
       };
+      phpPackages = lib.filterAttrs (
+        name: _:
+        !(builtins.elem name [
+          "write-flake"
+          "write-inputs"
+          "write-lock"
+        ])
+      ) config.packages;
     in
     {
       make-shells = lib.foldlAttrs (
@@ -94,6 +102,6 @@
           "${name}" = mkShell buildInputs;
           "env-${name}" = mkShell (buildInputs ++ envPackages);
         }
-      ) { } config.packages;
+      ) { } phpPackages;
     };
 }
