@@ -233,11 +233,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788658971,
-        "narHash": "sha256-clPP14Uv8yOriaWK8dGTDRHCIc5v3oiBaguh6yPUoio=",
+        "lastModified": 1789262846,
+        "narHash": "sha256-IrgEYbj5LY4EskP8lvYRexPp0jI2KBy3NJZBBgSqrpg=",
         "owner": "fossar",
         "repo": "nix-phps",
-        "rev": "632e2914a3cf088a0e82b58bbb6982685c1042a5",
+        "rev": "af15d3f84460bfa8cd15278795347e4661e0a199",
         "type": "github"
       },
       "original": {
