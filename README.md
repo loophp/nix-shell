@@ -10,8 +10,6 @@ This package provides a `Nix flake` ready to use for PHP development, using the
 [`Nix` package manager][50] which can be installed on (_almost_) any operating
 system.
 
-Available stable PHP versions from `5.6` to `8.4`.
-
 To list the available PHP versions, run:
 
 ```shell
