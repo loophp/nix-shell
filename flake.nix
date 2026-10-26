@@ -9,19 +9,10 @@
     };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     import-tree = {
       url = "github:denful/import-tree";
-    };
-    json-sort = {
-      url = "github:drupol/json-sort";
-      inputs = {
-        flake-parts.follows = "flake-parts";
-        import-tree.follows = "import-tree";
-        make-shell.follows = "make-shell";
-        nixpkgs.follows = "nixpkgs";
-        treefmt-nix.follows = "treefmt-nix";
-      };
     };
     make-shell = {
       url = "github:nicknovitski/make-shell";
