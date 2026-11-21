@@ -17,7 +17,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v7
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: cachix/install-nix-action@v32
       - name: Build PHP matrix
         id: set-phps
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v7
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: cachix/install-nix-action@v32
       - uses: cachix/cachix-action@v17
         with:
           name: nix-shell
